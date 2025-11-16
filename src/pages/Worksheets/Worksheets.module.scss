@@ -1,0 +1,53 @@
+$color: #0d6efd;
+
+.wrapper {
+    width: 100%;
+
+    .filter {
+        border-bottom: none;
+    }
+
+    .input {
+        max-width: 350px;
+        padding: 6px 8px;
+        font-size: 1.6rem;
+        border-radius: 6px;
+        border: 1px solid $color;
+        color: var(--text-color);
+    }
+
+    .select-form {
+        font-size: 1.6rem;
+        color: var(--text-color);
+        border-radius: 6px;
+    }
+
+    .table-wrapper {
+        padding: 0 32px;
+    }
+
+    table {
+        border: 2px solid #dee2e6;
+    }
+}
+
+.btn {
+}
+
+thead > tr {
+    font-size: 1.8rem;
+    height: 56px;
+    vertical-align: middle;
+}
+
+thead > tr > th {
+    text-align: center;
+}
+
+tbody > tr > td {
+    padding: 20px 12px;
+    font-size: 1.6rem;
+    height: 56px;
+    vertical-align: middle;
+    text-align: center;
+}

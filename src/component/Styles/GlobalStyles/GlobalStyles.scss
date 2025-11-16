@@ -5,7 +5,7 @@
     // #d44e68
     --black-color: #000;
     --white-color: #fff;
-    --text-color: #161823;
+    --text-color: #3e4256;
     --header-color: #71d4f8;
 
     --font-family: 'Noto Serif', sans-serif;
@@ -83,6 +83,10 @@ input,
 a {
     color: var(--text-color);
     text-decoration: none;
+
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 // fonts embedded
@@ -122,4 +126,14 @@ body {
     .tippy-content {
         padding: 8px 9px;
     }
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+span {
+    margin: 0;
+    padding: 0;
 }

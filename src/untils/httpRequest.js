@@ -2,7 +2,8 @@ import axios from 'axios';
 
 const httpRequest = axios.create({
     // baseURL: process.env.REACT_APP_BASE_URL,
-    baseURL: 'http://localhost:3002/', // Adjust if your server runs on a different port
+    baseURL: 'http://localhost:3002/api', // Adjust if your server runs on a different port
+    withCredentials: true,
 });
 
 // export const get = async (path, options = {}) => {

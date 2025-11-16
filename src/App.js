@@ -2,10 +2,16 @@ import { Fragment } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '~/routes';
 import DefaultLayout from '~/layouts';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function App() {
     return (
-        <Router>
+        <Router
+            future={{
+                v7_startTransition: true,
+            }}
+        >
             <div className="App">
                 <Routes>
                     {publicRoutes.map((route, index) => {

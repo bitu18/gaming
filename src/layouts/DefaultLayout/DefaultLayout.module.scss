@@ -7,9 +7,9 @@
 .container {
     position: relative;
     left: var(--default-layout-sidebar-width);
-    width: calc(var(--default-layout-width) - 230px);
+    width: calc(var(--default-layout-width) - var(--default-layout-sidebar-width));
     max-width: 100%;
-    padding: 0 var(--default-layout-horizontal-spacer);
+    // padding: 0 var(--default-layout-horizontal-spacer);
     display: flex;
     margin-top: var(--default-layout-header-height);
 }

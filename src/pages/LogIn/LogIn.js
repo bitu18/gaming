@@ -2,17 +2,18 @@ import classNames from 'classnames/bind';
 import Input from '~/layouts/components/Input';
 import TitleForLogin from '~/layouts/components/TitleForLogin';
 import Button from '~/component/Button';
-// import Image from '~/component/Image';
 import styles from './LogIn.module.scss';
 import { useState } from 'react';
 import ButtonMethod from '~/layouts/components/ButtonMethod';
-import googleIcon from '~/assets/images/google-icon.png';
 import * as userService from '~/serivces/userService';
 import { useNavigate } from 'react-router-dom';
+import { useLogin } from '~/hooks';
+import { actions, useStore } from '~/store';
 
 const cx = classNames.bind(styles);
 
 function LogIn() {
+    const [state, dispatch] = useStore();
     const [userNameOrEmail, setUserNameOrEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -20,25 +21,41 @@ function LogIn() {
 
     const isDisabled = !userNameOrEmail || !password;
 
-    const handleLogin = async () => {
+    const handleLoginByEmail = async () => {
         setErrorMessage('');
         try {
-            const result = await userService.userLogin(userNameOrEmail, password);
+            const result = await userService.userLoginByEmail(userNameOrEmail, password);
 
             // the email && password are correct
-            if (result.code === 0) {
-                // redirect or store token/user here
-                navigate('/');
-            }
-            // the email || password are not correct
-            else {
+            if (result.code !== 0) {
                 setErrorMessage(result.message);
                 return;
+            } else {
+                dispatch(actions.loginSuccess(result.user));
+                navigate('/');
             }
         } catch (error) {
             throw error;
         }
     };
+
+    const handleLoginByGoogle = async (dataUser) => {
+        setErrorMessage('');
+        try {
+            const result = await userService.userLoginByGoogle(dataUser.sub, dataUser.email);
+            if (result.code !== 0) {
+                setErrorMessage(result.message);
+                return;
+            } else {
+                dispatch(actions.loginSuccess(result.user));
+                navigate('/');
+            }
+        } catch (error) {
+            console.error('Error logging in with Google:', error);
+            setErrorMessage('Google login failed!');
+        }
+    };
+    const login = useLogin(handleLoginByGoogle);
 
     return (
         <div className={cx('wrapper')}>
@@ -64,8 +81,7 @@ function LogIn() {
                 }}
             />
             <span className={cx('error-message')}>{errorMessage}</span>
-
-            <Button primary medium disabled={isDisabled} className={cx('btn')} onClick={handleLogin}>
+            <Button primary medium disabled={isDisabled} className={cx('btn')} onClick={handleLoginByEmail}>
                 Login
             </Button>
             <div className={cx('separate')}>
@@ -73,10 +89,10 @@ function LogIn() {
                 <span className={cx('separate-text')}>or</span>
                 <div className={cx('separate-line')}></div>
             </div>
-
             <ButtonMethod
+                onClick={() => login()}
+                imgSrc="https://ac.blooket.com/assets/common/google.png"
                 title="Google"
-                // leftIcon={<Image src={googleIcon} className={cx('google-icon')} alt="google-icon" />}
             />
         </div>
     );

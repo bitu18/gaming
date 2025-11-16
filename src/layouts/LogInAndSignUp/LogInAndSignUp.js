@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import config from '~/config';
 import images from '~/assets/images';
 import Button from '~/component/Button';
-import { Wrapper as Popper } from '~/component/Popper';
+import PopperWrapper from '~/component/Popper';
 
 const cx = classNames.bind(styles);
 function LogInAndSignUp({ children }) {
@@ -34,7 +34,7 @@ function LogInAndSignUp({ children }) {
             </div>
 
             <div className={cx('content')}>
-                <Popper className={cx('popper')}>{children}</Popper>
+                <PopperWrapper className={cx('popper')}>{children}</PopperWrapper>
             </div>
         </div>
     );

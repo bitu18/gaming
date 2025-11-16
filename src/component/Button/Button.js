@@ -69,7 +69,7 @@ function Button({
 }
 
 Button.propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
     to: PropTypes.string,
     href: PropTypes.string,
     normal: PropTypes.bool,

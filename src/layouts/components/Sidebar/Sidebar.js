@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 import Menu, { MenuItem } from './Menu';
-import config from '~/config';
 import Button from '~/component/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -11,7 +10,6 @@ import {
     faListUl,
     faPlay,
     faPlus,
-    faSchool,
     faStore,
 } from '@fortawesome/free-solid-svg-icons';
 // import { faNoteSticky, faPenToSquare, faUser, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
@@ -27,7 +25,7 @@ const STUDENT_ITEMS = [
     },
     {
         icon: <FontAwesomeIcon icon={faCompass} />,
-        title: 'Explore Quests',
+        title: 'Explore',
         to: '/explore',
     },
     {
@@ -43,7 +41,7 @@ const STUDENT_ITEMS = [
     {
         icon: <FontAwesomeIcon icon={faFolderOpen} />,
         title: 'Worksheets',
-        to: '/worksheet',
+        to: '/worksheets',
     },
     {
         icon: <FontAwesomeIcon icon={faClockRotateLeft} />,
@@ -81,7 +79,7 @@ const TEACHER_ITEMS = [
     {
         icon: <FontAwesomeIcon icon={faFolderOpen} />,
         title: 'Worksheets',
-        to: '/worksheet',
+        to: '/worksheets',
     },
     {
         icon: <FontAwesomeIcon icon={faGamepad} />,

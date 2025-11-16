@@ -1,45 +1,23 @@
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faCircleQuestion,
-    faEllipsisVertical,
-    faGear,
-    faLanguage,
-    faPenToSquare,
-    faPlus,
-    faRightFromBracket,
-    faUser,
-    faUsers,
-} from '@fortawesome/free-solid-svg-icons';
-import Tippy from '@tippyjs/react';
+import { faCircleQuestion, faEllipsisVertical, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 import 'tippy.js/dist/tippy.css';
-import { Link } from 'react-router-dom';
-// import {
-//     UploadIcon,
-//     InboxIcon,
-//     MessageIcon,
-//     ProfileIcon,
-//     CoinIcon,
-//     SettingsIcon,
-//     LanguageIcon,
-//     HelpIcon,
-//     ShortcutsIcon,
-//     LogoutIcon,
-// } from '~/component/Icons/Icons';
+import { Link, useNavigate } from 'react-router-dom';
 
 import styles from './Header.module.scss';
 import images from '~/assets/images';
 import Button from '~/component/Button';
 import Menu from '~/component/Popper/Menu';
 // import Image from '~/component/Image';
-import Search from '../Search';
 import config from '~/config';
-import { faKeyboard } from '@fortawesome/free-regular-svg-icons';
-// import { useForm } from '~/';
+import { actions, useStore } from '~/store';
+import { useEffect } from 'react';
+import * as userService from '~/serivces/userService';
+import { LOGIN_SUCCESS, LOGOUT_SUCCESS } from '~/store/constants';
 
 const cx = classNames.bind(styles);
 
-const currentUser = false;
+// const currentUser = false;
 
 const MENU_ITEMS = [
     // {
@@ -61,39 +39,55 @@ const MENU_ITEMS = [
     //         ],
     //     },
     // },
-    {
-        icon: <FontAwesomeIcon icon={faGear} />,
-        title: 'Settings',
-        to: '/settings',
-    },
+
     {
         icon: <FontAwesomeIcon icon={faCircleQuestion} />,
         title: 'Feedback and help',
         to: '/feedback',
     },
-
-    // {
-    //     icon: <FontAwesomeIcon icon={faKeyboard} />,
-    //     title: 'Keyboard shortcuts',
-    // },
 ];
 
 function Header() {
-    // const { userInfor } = useForm();
+    const [state, dispatch] = useStore();
+    const { isLogin } = state;
+    const navigate = useNavigate();
 
-    const handleMenuChange = (menuItem) => {};
+    const handleMenuChange = async (menuItem) => {
+        if (menuItem.title === 'Log out') {
+            const result = await userService.userLogout();
+
+            if (result.code === 0) {
+                dispatch({ type: LOGOUT_SUCCESS });
+                navigate('/login');
+            }
+        }
+    };
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await userService.getInforUser();
+                dispatch(actions.loginSuccess(userData.data));
+            } catch (error) {
+                const status = error.response?.status;
+                if (status !== 400 && status !== 401) {
+                    console.error('Unexpected error while fetching user info:', error);
+                }
+            }
+        };
+        fetchUser();
+    }, [dispatch]);
 
     const userMenu = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
             title: 'View Profile',
-            // to: `/account/@${userInfor?.name}`,
+            to: `/profile/@${state.user?.userName}`,
         },
         ...MENU_ITEMS,
         {
             icon: <FontAwesomeIcon icon={faRightFromBracket} />,
             title: 'Log out',
-            to: '/logout',
             separate: true,
         },
     ];
@@ -105,27 +99,24 @@ function Header() {
                     <img src={images.logoGaming} alt="Gaming" className={cx('logo')} />
                 </Link>
 
-                {/* <Search /> */}
-
                 <div className={cx('actions')}>
-                    {currentUser ? (
-                        <>
-                            {/* <Tippy delay={[0, 200]} content="Create" placement="bottom" offset={[0, 0]}>
-                                <button className={cx('action-btn')}>
-                                    <FontAwesomeIcon icon={faPenToSquare} />
+                    {isLogin ? (
+                        <Menu items={isLogin ? userMenu : MENU_ITEMS} onChange={handleMenuChange}>
+                            {isLogin ? (
+                                <div className={cx('user-infor')}>
+                                    <img
+                                        src="https://img.freepik.com/free-vector/cute-dog-looking-cartoon-vector-icon-illustration-animal-nature-icon-isolated-flat-vector_138676-12277.jpg?semt=ais_hybrid&w=740"
+                                        className={cx('user-avatar')}
+                                        alt={state.user?.userName}
+                                    />
+                                    <h3 className={cx('name')}>{state.user?.userName}</h3>
+                                </div>
+                            ) : (
+                                <button className={cx('more-btn')}>
+                                    <FontAwesomeIcon icon={faEllipsisVertical} />
                                 </button>
-                            </Tippy>
-                            <Tippy delay={[0, 200]} content="About us" placement="bottom" offset={[0, 0]}>
-                                <button className={cx('action-btn')}>
-                                    <FontAwesomeIcon icon={faUsers} />
-                                </button>
-                            </Tippy> */}
-                            {/* <Tippy delay={[0, 200]} content="Upload Video" placement="bottom" offset={[0, 0]}>
-                                <button className={cx('action-btn')}>
-                                    <UploadIcon />
-                                </button>
-                            </Tippy> */}
-                        </>
+                            )}
+                        </Menu>
                     ) : (
                         <>
                             <Button outline small to={config.routes.login}>
@@ -136,23 +127,6 @@ function Header() {
                             </Button>
                         </>
                     )}
-
-                    <Menu items={currentUser ? userMenu : MENU_ITEMS} onChange={handleMenuChange}>
-                        {currentUser ? (
-                            <div className={cx('user-infor')}>
-                                {/* <Image
-                                    src="https://lh3.googleusercontent.com/a/ACg8ocKc1ICnb9GX8PWH_926Iqh6IidJVYr544TLYJfXaHeYu0c=s96-c"
-                                    className={cx('user-avatar')}
-                                    alt="Bitu"
-                                /> */}
-                                <h3 className={cx('name')}>BiTu</h3>
-                            </div>
-                        ) : (
-                            <button className={cx('more-btn')}>
-                                <FontAwesomeIcon icon={faEllipsisVertical} />
-                            </button>
-                        )}
-                    </Menu>
                 </div>
             </div>
         </header>

@@ -5,11 +5,22 @@
     font-size: 2rem;
     margin: 15px 0;
 }
+.des {
+    text-align: center;
+    width: 50%;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+}
 
 .option {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .btn-resend {
+        padding-left: 0;
+        min-width: 0;
+    }
 }
 .btn-option {
     display: flex;
@@ -97,6 +108,12 @@
     text-align: end;
     margin-top: 20px;
     width: 100%;
+
+    .btn-submit {
+        display: block;
+        margin: 0 auto;
+        min-width: 266px;
+    }
 }
 
 .google-icon {
