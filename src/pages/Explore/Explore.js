@@ -6,6 +6,7 @@ import Button from '~/component/Button';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { useState } from 'react';
 import exploreImage from '~/assets/images/default-image.jpg';
+import posterSpellbreaker from '~/assets/images/Poster-Spellbreaker.png';
 
 const cx = classNames.bind(styles);
 
@@ -42,12 +43,8 @@ function Explore() {
 
                 <div className={cx('content')}>
                     <a className={cx('game-item')} href="/game/hangman">
-                        <img
-                            className={cx('image')}
-                            src="https://m.media-amazon.com/images/I/81dPZl4IP4L.jpg"
-                            alt="Explore"
-                        />
-                        <h2 className={cx('title')}>Name of the Game</h2>
+                        <img className={cx('image')} src={posterSpellbreaker} alt="Explore" />
+                        <h2 className={cx('title')}>Spellbreaker</h2>
                     </a>
                 </div>
             </div>

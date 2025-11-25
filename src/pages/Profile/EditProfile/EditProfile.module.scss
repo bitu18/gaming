@@ -1,0 +1,87 @@
+.wrapper {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+
+    .popper {
+        position: absolute;
+        min-height: 300px;
+        top: 50%;
+        left: 55%;
+        transform: translate(-50%, -53%);
+        max-width: 600px;
+        text-align: center;
+        padding: 20px;
+    }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+
+    h3 {
+        width: 100%;
+        font-size: 2rem;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    .close {
+        cursor: pointer;
+        font-size: 2.2rem;
+        transition: 0.2s;
+        padding: 4px;
+
+        &:hover {
+            color: var(--primary-color);
+        }
+    }
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        font-size: 1.6rem;
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    input {
+        height: 44px;
+        padding: 7px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+}
+
+.save-btn {
+    margin-top: 12px;
+    padding: 10px;
+    width: 100%;
+    background: #0090d4;
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+
+    &:hover {
+        background: var(--header-color);
+    }
+}

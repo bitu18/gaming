@@ -7,13 +7,46 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight, faCircleInfo, faComment, faUser, faUserPen } from '@fortawesome/free-solid-svg-icons';
 import { faSquareFacebook, faSquareInstagram, faSquareTwitter } from '@fortawesome/free-brands-svg-icons';
 import EditProfile from './EditProfile/EditProfile';
+import TitlePage from '~/component/TitlePage';
+import * as userService from '~/serivces/userService';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(style);
 function Profile() {
+    const [userInfor, setUserInfor] = useState([]);
+    const [openEdit, setOpenEdit] = useState(false);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await userService.getInforUser();
+
+                if (userData.errorCode === 0) {
+                    const orginalDate = userData.data.create_date;
+                    const formattedDate = new Date(orginalDate).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                    });
+
+                    setUserInfor({
+                        ...userData.data,
+                        create_date: formattedDate,
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        };
+
+        fetchUser();
+    }, []);
     return (
         <>
             <div className={cx('wrapper')}>
-                <PageTitle title="Settings" />
+                {/* <PageTitle title="Profile" /> */}
+                <TitlePage title="Profile" />
 
                 <div className={cx('infor-wrapper')}>
                     <PopperWrapper className={cx('popper')}>
@@ -21,37 +54,37 @@ function Profile() {
                             <FontAwesomeIcon icon={faUser} className={cx('user-icon')} />
                             <h2>Profile</h2>
                         </div>
-                        <div className={cx('section')}>
+
+                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
                             <Button className={cx('btn')}>
                                 <span>
-                                    Username: <p className={cx('text')}>Bitu</p>
+                                    Username: <p className={cx('text')}>{userInfor.userName}</p>
                                 </span>
                             </Button>
                             <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
-                        <div className={cx('section')}>
+                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
                             <Button className={cx('btn')}>
                                 <span>
-                                    Name: <p className={cx('text')}>Bi Từ</p>
+                                    Email: <p className={cx('text')}>{userInfor.email}</p>
                                 </span>
                             </Button>
                             <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
-                        <div className={cx('section')}>
+                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
                             <Button className={cx('btn')}>
                                 <span>
-                                    Dashboard Layout: <p className={cx('text')}>Teacher</p>
+                                    Dashboard Layout:
+                                    <p className={cx('text')}>{userInfor.roleId === 'S' ? 'Student' : 'Teacher'}</p>
                                 </span>
                             </Button>
-                            <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
-                        <div className={cx('section')}>
+                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
                             <Button className={cx('btn')}>
                                 <span>
-                                    Joined: <p className={cx('text')}>Monday, July 14th, 2025</p>
+                                    Joined: <p className={cx('text')}>{userInfor.create_date}</p>
                                 </span>
                             </Button>
-                            <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
                     </PopperWrapper>
 
@@ -139,7 +172,14 @@ function Profile() {
                     </PopperWrapper>
                 </div>
             </div>
-            <EditProfile />
+
+            {openEdit && (
+                <EditProfile
+                    userInfor={userInfor}
+                    onClose={() => setOpenEdit(false)}
+                    onSubmit={(data) => console.log('Submit:', data)}
+                />
+            )}
         </>
     );
 }

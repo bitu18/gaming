@@ -68,6 +68,7 @@ function Header() {
             try {
                 const userData = await userService.getInforUser();
                 dispatch(actions.loginSuccess(userData.data));
+                // console.log('Fetched user info:', userData.data);
             } catch (error) {
                 const status = error.response?.status;
                 if (status !== 400 && status !== 401) {
