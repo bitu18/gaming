@@ -8,8 +8,10 @@ const routes = {
     search: '/search',
     login: '/login',
     signup: '/signup',
-    explore: '/explore',
-    game: '/game/:gameId',
+    // explore: '/explore',
+    games: '/games',
+    gameTypes: '/games/:type',
+    gamePlayer: '/games/:type/:gameId',
 };
 
 export default routes;

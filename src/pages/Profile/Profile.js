@@ -10,11 +10,13 @@ import EditProfile from './EditProfile/EditProfile';
 import TitlePage from '~/component/TitlePage';
 import * as userService from '~/serivces/userService';
 import { useEffect, useState } from 'react';
+import { actions, useStore } from '~/store';
 
 const cx = classNames.bind(style);
 function Profile() {
+    const [state, dispatch] = useStore();
     const [userInfor, setUserInfor] = useState([]);
-    const [openEdit, setOpenEdit] = useState(false);
+    const [openEdit, setOpenEdit] = useState('');
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -42,6 +44,37 @@ function Profile() {
 
         fetchUser();
     }, []);
+
+    const handleUpdateUser = (res) => {
+        if (res.errorCode === 0) {
+            const originalDate = res.data.create_date;
+
+            // If back-end DID NOT return a create_date, use the old one
+            const dateToUse = originalDate || userInfor.create_date;
+            let formattedDate = dateToUse;
+
+            // Re-format the date same as first load
+            // Only format if it's a real date string
+            if (!isNaN(new Date(dateToUse).getTime())) {
+                formattedDate = new Date(dateToUse).toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                });
+            }
+
+            const updatedUser = {
+                ...res.data,
+                create_date: formattedDate,
+            };
+
+            dispatch(actions.loginSuccess(updatedUser));
+            setUserInfor(updatedUser); // Update with new data from server
+        }
+
+        setOpenEdit(false);
+    };
     return (
         <>
             <div className={cx('wrapper')}>
@@ -55,7 +88,7 @@ function Profile() {
                             <h2>Profile</h2>
                         </div>
 
-                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
+                        <div className={cx('section')} onClick={() => setOpenEdit('username')}>
                             <Button className={cx('btn')}>
                                 <span>
                                     Username: <p className={cx('text')}>{userInfor.userName}</p>
@@ -63,7 +96,7 @@ function Profile() {
                             </Button>
                             <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
-                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
+                        <div className={cx('section')} onClick={() => setOpenEdit('email')}>
                             <Button className={cx('btn')}>
                                 <span>
                                     Email: <p className={cx('text')}>{userInfor.email}</p>
@@ -71,7 +104,7 @@ function Profile() {
                             </Button>
                             <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
-                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
+                        <div className={cx('section')} onClick={() => setOpenEdit('username')}>
                             <Button className={cx('btn')}>
                                 <span>
                                     Dashboard Layout:
@@ -79,7 +112,7 @@ function Profile() {
                                 </span>
                             </Button>
                         </div>
-                        <div className={cx('section')} onClick={() => setOpenEdit(true)}>
+                        <div className={cx('section')}>
                             <Button className={cx('btn')}>
                                 <span>
                                     Joined: <p className={cx('text')}>{userInfor.create_date}</p>
@@ -93,20 +126,22 @@ function Profile() {
                             <FontAwesomeIcon icon={faUserPen} className={cx('user-icon')} />
                             <h2>Account settings</h2>
                         </div>
-                        <div className={cx('section')}>
+                        <div className={cx('section')} onClick={() => setOpenEdit('password')}>
                             <Button className={cx('btn')}>
                                 <span>Update password</span>
                             </Button>
                             <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
-                        <div className={cx('section')}>
+                        <div className={cx('section')} onClick={() => setOpenEdit('delete')}>
                             <Button className={cx('btn')}>
                                 <span>Delete account</span>
                             </Button>
                             <FontAwesomeIcon icon={faChevronRight} className={cx('right-icon')} />
                         </div>
                         <div className={cx('section')}>
-                            <Button className={cx('btn')}>Switch to Student layout</Button>
+                            <Button className={cx('btn', 'btn-custom')}>
+                                Switch to {userInfor.roleId === 'S' ? 'Teacher' : 'Student'} layout
+                            </Button>
                         </div>
                         <div className={cx('section')}>
                             <Button className={cx('btn-custom')}>Log out</Button>
@@ -176,8 +211,9 @@ function Profile() {
             {openEdit && (
                 <EditProfile
                     userInfor={userInfor}
+                    mode={openEdit}
                     onClose={() => setOpenEdit(false)}
-                    onSubmit={(data) => console.log('Submit:', data)}
+                    onSubmit={handleUpdateUser}
                 />
             )}
         </>

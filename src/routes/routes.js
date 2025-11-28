@@ -12,6 +12,8 @@ import LogIn from '~/pages/LogIn';
 import SignUp from '~/pages/SignUp';
 import Explore from '~/pages/Explore';
 import GamePlayer from '~/pages/GamePlayer';
+import Games from '~/pages/Games';
+import GameTypes from '~/pages/Games/GameTypes';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
@@ -22,8 +24,9 @@ const publicRoutes = [
     { path: config.routes.search, component: Search, layout: null },
     { path: config.routes.login, component: LogIn, layout: LogInAndSignUp },
     { path: config.routes.signup, component: SignUp, layout: LogInAndSignUp },
-    { path: config.routes.explore, component: Explore },
-    { path: config.routes.game, component: GamePlayer, layout: null },
+    { path: config.routes.games, component: Games },
+    { path: config.routes.gameTypes, component: GameTypes },
+    { path: config.routes.gamePlayer, component: GamePlayer, layout: null },
 ];
 
 const privateRoutes = [];

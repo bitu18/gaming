@@ -19,14 +19,14 @@ import { useState } from 'react';
 
 const STUDENT_ITEMS = [
     {
+        icon: <FontAwesomeIcon icon={faGamepad} />,
+        title: 'Games',
+        to: '/games',
+    },
+    {
         icon: <FontAwesomeIcon icon={faPenToSquare} />,
         title: 'Create Quest',
         to: '/create',
-    },
-    {
-        icon: <FontAwesomeIcon icon={faCompass} />,
-        title: 'Explore',
-        to: '/explore',
     },
     {
         icon: <FontAwesomeIcon icon={faListUl} />,
@@ -53,14 +53,14 @@ const STUDENT_ITEMS = [
         title: 'Merchant',
         to: '/market',
     },
-    {
-        icon: <FontAwesomeIcon icon={faGamepad} />,
-        title: 'Classroom games',
-        to: '/game',
-    },
 ];
 
 const TEACHER_ITEMS = [
+    {
+        icon: <FontAwesomeIcon icon={faGamepad} />,
+        title: 'Games',
+        to: '/game',
+    },
     {
         icon: <FontAwesomeIcon icon={faListUl} />,
         title: 'My Quests',
@@ -80,11 +80,6 @@ const TEACHER_ITEMS = [
         icon: <FontAwesomeIcon icon={faFolderOpen} />,
         title: 'Worksheets',
         to: '/worksheets',
-    },
-    {
-        icon: <FontAwesomeIcon icon={faGamepad} />,
-        title: 'Classroom games',
-        to: '/game',
     },
 ];
 

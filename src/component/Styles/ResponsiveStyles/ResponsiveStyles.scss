@@ -31,6 +31,16 @@
     padding-right: 0;
 }
 
+.row.big-gutter {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+
+.row.big-gutter .col {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
 /* mobile */
 .c-0 {
     display: none;
@@ -323,6 +333,11 @@
     .l-1 {
         flex: 0 0 8.33333%;
         max-width: 8.33333%;
+    }
+
+    .l-1-7 {
+        flex: 0 0 14.2857%;
+        max-width: 14.2857%;
     }
 
     .l-2 {

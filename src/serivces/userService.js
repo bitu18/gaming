@@ -80,6 +80,24 @@ export const getInforUser = async () => {
     }
 };
 
+export const updateUserInfor = async (data) => {
+    try {
+        const res = await httpRequest.put(`/user/update-user`, data);
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteUserAccount = async () => {
+    try {
+        const res = await httpRequest.delete('/user/delete-user');
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 export const userLogout = async () => {
     try {
         const res = await httpRequest.post('/user/logout');
