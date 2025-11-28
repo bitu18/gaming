@@ -8,7 +8,6 @@ const routes = {
     search: '/search',
     login: '/login',
     signup: '/signup',
-    // explore: '/explore',
     games: '/games',
     gameTypes: '/games/:type',
     gamePlayer: '/games/:type/:gameId',

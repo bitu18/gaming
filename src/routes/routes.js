@@ -10,7 +10,6 @@ import Market from '~/pages/Market';
 import Search from '~/pages/Search';
 import LogIn from '~/pages/LogIn';
 import SignUp from '~/pages/SignUp';
-import Explore from '~/pages/Explore';
 import GamePlayer from '~/pages/GamePlayer';
 import Games from '~/pages/Games';
 import GameTypes from '~/pages/Games/GameTypes';
