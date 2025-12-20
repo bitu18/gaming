@@ -9,8 +9,10 @@ const routes = {
     login: '/login',
     signup: '/signup',
     games: '/games',
-    gameTypes: '/games/:type',
-    gamePlayer: '/games/:type/:gameId',
+    gamePlayer: '/game/:gameId',
+
+    description: '/description/:type',
+    // gameTypes: '/games/:type',
 };
 
 export default routes;

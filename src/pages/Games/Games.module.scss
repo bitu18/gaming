@@ -1,45 +1,124 @@
 .wrapper {
 }
 
+// .classrooms {
+//     height: 300px;
+//     min-width: 335px;
+//     border-radius: 10px;
+//     border: 3px solid #d37f00;
+//     transition: box-shadow 0.3s ease, transform 0.3s ease;
+
+//     + .classrooms {
+//         margin-left: 60px;
+//     }
+
+//     .icon {
+//         font-size: 20rem;
+//         display: block;
+//         width: 100%;
+//         text-align: center;
+//         margin-bottom: 10px;
+//         color: var(--header-color);
+//     }
+
+//     .label {
+//         font-size: 2.4rem;
+//         text-align: center;
+//         color: var(--text-color);
+//     }
+
+//     .button {
+//         height: 100%;
+//     }
+
+//     :hover {
+//         box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+//         transform: translateY(-1px);
+//     }
+// }
+
 .inner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
+    padding: 20px 40px;
 }
 
-.classrooms {
-    height: 300px;
-    min-width: 335px;
-    border-radius: 10px;
-    border: 3px solid #d37f00;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
+.search {
+    width: 800px;
+    position: relative;
 
-    + .classrooms {
-        margin-left: 60px;
+    .input {
+        width: 100%;
+        height: 50px;
+        font-size: 1.6rem;
+        padding: 10px 15px;
+        // padding: 10px 15px 10px 5px;
+        border-radius: 6px;
+        border: 3px solid var(--header-color);
     }
 
-    .icon {
-        font-size: 20rem;
-        display: block;
-        width: 100%;
-        text-align: center;
-        margin-bottom: 10px;
+    .btn-search {
+        position: absolute;
+        right: -20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: transparent;
+        color: var(--header-color);
+
+        .icon-search {
+            font-size: 2.2rem;
+            color: #90939b;
+
+            &:active {
+                color: var(--header-color);
+            }
+        }
+    }
+
+    .input:not(:placeholder-shown) + .btn-search .icon-search {
         color: var(--header-color);
     }
+}
 
-    .label {
+.content {
+    .type {
+        margin-top: 40px;
         font-size: 2.4rem;
-        text-align: center;
         color: var(--text-color);
+        font-weight: 600;
+    }
+    .game-item {
+        display: block;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        will-change: transform, box-shadow;
+        background-color: transparent;
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+
+        &:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transform: translateY(-1px);
+            background-color: transparent !important;
+        }
     }
 
-    .button {
-        height: 100%;
+    .image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+        border-radius: 10px;
     }
+    .title {
+        margin: 6px 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-align: center;
+    }
+}
 
-    :hover {
-        box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
-        transform: translateY(-1px);
-    }
+// Description
+.description {
 }

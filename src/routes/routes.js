@@ -13,6 +13,7 @@ import SignUp from '~/pages/SignUp';
 import GamePlayer from '~/pages/GamePlayer';
 import Games from '~/pages/Games';
 import GameTypes from '~/pages/Games/GameTypes';
+import Description from '~/pages/Games/components/Description';
 
 const publicRoutes = [
     { path: config.routes.home, component: Home },
@@ -26,6 +27,7 @@ const publicRoutes = [
     { path: config.routes.games, component: Games },
     { path: config.routes.gameTypes, component: GameTypes },
     { path: config.routes.gamePlayer, component: GamePlayer, layout: null },
+    { path: config.routes.description, component: Description, layout: null },
 ];
 
 const privateRoutes = [];
