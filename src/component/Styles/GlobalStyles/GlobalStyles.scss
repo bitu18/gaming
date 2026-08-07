@@ -1,12 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&display=swap');
 @import 'normalize.css';
 :root {
-    --primary-color: #eda63a;
+    --primary-color: #2d5bff;
     // #d44e68
     --black-color: #000;
     --white-color: #fff;
     --text-color: #3e4256;
-    --header-color: #71d4f8;
+    --header-color: #ffffff;
+    // #71d4f8
 
     --font-family: 'Noto Serif', sans-serif;
     // 'TikTokFont', sans-serif
@@ -39,7 +40,8 @@ body {
     // color: var(--white-color);
     color: var(--text-color);
     overflow-y: overlay;
-    background-color: #f7f7f7;
+    background-color: #f9f8f6;
+    // #f7f7f7
 }
 
 // Scrollbar CSS

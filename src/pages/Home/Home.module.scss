@@ -1,0 +1,162 @@
+.hero {
+    position: relative;
+    min-height: calc(100vh - var(--default-layout-header-height));
+
+    overflow: hidden;
+
+    background: #eef7ff;
+    // background: #c3fdea;
+    // background: #bff7e9;
+
+    padding: 70px 24px;
+    margin-top: var(--default-layout-header-height);
+}
+
+.banner {
+    position: absolute;
+    background-color: transparent;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    // transform: translate(-50%, -50%);
+
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    // margin-left: 400px;
+
+    // background: linear-gradient(
+    //     to right,
+    //     #bff7e9 0%,
+    //     rgba(191, 247, 233, 0.8) 25%,
+    //     rgba(191, 247, 233, 0.3) 65%,
+    //     transparent 100%
+    // );
+
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+
+    max-width: 2180px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+}
+
+.left {
+    width: 48%;
+}
+
+.right {
+    width: 48%;
+
+    display: flex;
+    justify-content: center;
+
+    img {
+        width: 100%;
+        max-width: 650px;
+    }
+}
+
+.left h1 {
+    font-size: 64px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: #172554;
+}
+
+.left h1 span {
+    color: #2d5bff;
+}
+
+.left p {
+    margin-top: 20px;
+
+    color: #4b5563;
+
+    font-size: 20px;
+
+    line-height: 1.8;
+}
+
+.search {
+    margin-top: 40px;
+
+    width: 100%;
+    max-width: 600px;
+
+    background: white;
+
+    border-radius: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.search input {
+    flex: 1;
+
+    border: none;
+
+    padding: 20px 28px;
+
+    font-size: 18px;
+
+    outline: none;
+
+    background: transparent;
+}
+
+.search button {
+    width: 70px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 22px;
+
+    color: #355dff;
+}
+
+.quickLinks {
+    margin-top: 32px;
+
+    display: flex;
+
+    gap: 18px;
+
+    flex-wrap: wrap;
+}
+
+.quickLinks button {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    color: #2d5bff;
+
+    cursor: pointer;
+}

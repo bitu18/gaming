@@ -1,48 +1,26 @@
 import classNames from 'classnames/bind';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleQuestion, faEllipsisVertical, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
-import 'tippy.js/dist/tippy.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { faCircleQuestion, faRightFromBracket, faUser } from '@fortawesome/free-solid-svg-icons';
 
 import styles from './Header.module.scss';
 import images from '~/assets/images';
 import Button from '~/component/Button';
 import Menu from '~/component/Popper/Menu';
-// import Image from '~/component/Image';
 import config from '~/config';
-import { actions, useStore } from '~/store';
+
 import { useEffect } from 'react';
+import { actions, useStore } from '~/store';
+import { LOGOUT_SUCCESS } from '~/store/constants';
+
 import * as userService from '~/serivces/userService';
-import { LOGIN_SUCCESS, LOGOUT_SUCCESS } from '~/store/constants';
 
 const cx = classNames.bind(styles);
 
-// const currentUser = false;
-
 const MENU_ITEMS = [
-    // {
-    //     icon: <FontAwesomeIcon icon={faLanguage} />,
-    //     title: 'English',
-    //     children: {
-    //         title: 'Language',
-    //         data: [
-    //             {
-    //                 type: 'language',
-    //                 code: 'en',
-    //                 title: 'English',
-    //             },
-    //             {
-    //                 type: 'language',
-    //                 code: 'vi',
-    //                 title: 'Tiếng Việt',
-    //             },
-    //         ],
-    //     },
-    // },
-
     {
         icon: <FontAwesomeIcon icon={faCircleQuestion} />,
-        title: 'Feedback and help',
+        title: 'Feedback & Help',
         to: '/feedback',
     },
 ];
@@ -50,39 +28,35 @@ const MENU_ITEMS = [
 function Header() {
     const [state, dispatch] = useStore();
     const { isLogin } = state;
+
     const navigate = useNavigate();
 
-    const handleMenuChange = async (menuItem) => {
-        if (menuItem.title === 'Log out') {
-            const result = await userService.userLogout();
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const res = await userService.getInforUser();
+                dispatch(actions.loginSuccess(res.data));
+            } catch {}
+        };
 
-            if (result.code === 0) {
+        fetchUser();
+    }, [dispatch]);
+
+    const handleMenuChange = async (item) => {
+        if (item.title === 'Log out') {
+            const res = await userService.userLogout();
+
+            if (res.code === 0) {
                 dispatch({ type: LOGOUT_SUCCESS });
                 navigate('/login');
             }
         }
     };
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const userData = await userService.getInforUser();
-                dispatch(actions.loginSuccess(userData.data));
-                // console.log('Fetched user info:', userData.data);
-            } catch (error) {
-                const status = error.response?.status;
-                if (status !== 400 && status !== 401) {
-                    console.error('Unexpected error while fetching user info:', error);
-                }
-            }
-        };
-        fetchUser();
-    }, [dispatch]);
-
     const userMenu = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
-            title: 'View Profile',
+            title: 'Profile',
             to: `/profile/@${state.user?.userName}`,
         },
         ...MENU_ITEMS,
@@ -96,34 +70,41 @@ function Header() {
     return (
         <header className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <Link to={config.routes.home} className={cx('logo-link')}>
-                    <img src={images.logoGaming} alt="Gaming" className={cx('logo')} />
+                {/* Logo */}
+                <Link to="/" className={cx('logo')}>
+                    <img src={images.logoGaming} alt="QuestLix" />
                 </Link>
 
+                {/* Navigation */}
+                <nav className={cx('navigation')}>
+                    <NavLink to="/worksheets">Worksheets</NavLink>
+
+                    <NavLink to="/teacher-tools">Teacher Tools</NavLink>
+
+                    <NavLink to="/games">Games</NavLink>
+
+                    <NavLink to="/resource-library">Resource Library</NavLink>
+
+                    <NavLink to="/pricing">Pricing</NavLink>
+                </nav>
+
+                {/* Right */}
                 <div className={cx('actions')}>
                     {isLogin ? (
-                        <Menu items={isLogin ? userMenu : MENU_ITEMS} onChange={handleMenuChange}>
-                            {isLogin ? (
-                                <div className={cx('user-infor')}>
-                                    <img
-                                        src="https://img.freepik.com/free-vector/cute-dog-looking-cartoon-vector-icon-illustration-animal-nature-icon-isolated-flat-vector_138676-12277.jpg?semt=ais_hybrid&w=740"
-                                        className={cx('user-avatar')}
-                                        alt={state.user?.userName}
-                                    />
-                                    <h3 className={cx('name')}>{state.user?.userName}</h3>
-                                </div>
-                            ) : (
-                                <button className={cx('more-btn')}>
-                                    <FontAwesomeIcon icon={faEllipsisVertical} />
-                                </button>
-                            )}
+                        <Menu items={userMenu} onChange={handleMenuChange}>
+                            <div className={cx('profile')}>
+                                <img src="https://i.pravatar.cc/150" alt="" />
+
+                                <span>{state.user?.userName}</span>
+                            </div>
                         </Menu>
                     ) : (
                         <>
-                            <Button outline small to={config.routes.login}>
-                                Login
+                            <Button outline rounded to={config.routes.login}>
+                                Log in
                             </Button>
-                            <Button primary small style={{ padding: '5px 16px' }} to={config.routes.signup}>
+
+                            <Button primary rounded to={config.routes.signup}>
                                 Sign up
                             </Button>
                         </>

@@ -16,7 +16,7 @@ import GameTypes from '~/pages/Games/GameTypes';
 import Description from '~/pages/Games/components/Description';
 
 const publicRoutes = [
-    { path: config.routes.home, component: Home },
+    { path: config.routes.home, component: Home, layout: HeaderOnly },
     { path: config.routes.profile, component: Profile },
     { path: config.routes.worksheet, component: Worksheets },
     { path: config.routes.create, component: Create },

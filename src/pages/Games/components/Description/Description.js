@@ -25,7 +25,7 @@ function Description({ onClose }) {
                     <div className={cx('badges')}>
                         <span>Classroom</span>
                         <span>Review</span>
-                        <span>Class Collaboration</span>
+                        <span>Class Collaboration</span>n
                     </div>
 
                     <p className={cx('description')}>
