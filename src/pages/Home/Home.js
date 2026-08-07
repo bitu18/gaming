@@ -1,5 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
-import ReactPlayer from 'react-player';
+import React from 'react';
 import styles from './Home.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGamepad, faMagnifyingGlass, faScrewdriverWrench, faFileLines } from '@fortawesome/free-solid-svg-icons';
