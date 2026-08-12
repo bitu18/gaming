@@ -3,17 +3,17 @@ import styles from './Games.module.scss';
 import TitlePage from '~/component/TitlePage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '~/component/Button';
-import { faChalkboard, faGamepad, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import posterSpellbreaker from '~/assets/images/Poster-Spellbreaker.png';
-import routes from '~/config/routes';
-import { Link, useParams } from 'react-router-dom';
+// import routes from '~/config/routes';
+import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import Description from './components/Description';
 
 const cx = classNames.bind(styles);
 
 function Games() {
-    let { gameId } = useParams();
+    // let { gameId } = useParams();
     const [typing, setTyping] = useState('');
     const [activeSearch, setActiveSearch] = useState(false);
     const [description, setDescription] = useState(false);

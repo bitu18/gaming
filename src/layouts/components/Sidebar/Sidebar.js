@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 // import { faNoteSticky, faPenToSquare, faUser, faPenToSquare } from '@fortawesome/free-regular-svg-icons';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { faCompass, faFaceSmile, faFileLines, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
+import { faFaceSmile, faFileLines, faFolderOpen } from '@fortawesome/free-regular-svg-icons';
 import { useState } from 'react';
 
 const STUDENT_ITEMS = [

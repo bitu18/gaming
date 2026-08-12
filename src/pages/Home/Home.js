@@ -10,7 +10,7 @@ const cx = classNames.bind(styles);
 function Home() {
     return (
         <section className={cx('hero')}>
-            <img className={cx('banner')} src={images.bannerHome} alt="QuestLix fantasy castle" />
+            {/* <img className={cx('banner')} src={images.bannerHome} alt="QuestLix fantasy castle" /> */}
 
             <div className={cx('container')}>
                 <div className={cx('left')}>
@@ -52,9 +52,9 @@ function Home() {
                     </div>
                 </div>
 
-                {/* <div className={cx('right')}>
+                <div className={cx('right')}>
                     <img src={images.bannerHome} alt="Hero" />
-                </div> */}
+                </div>
             </div>
         </section>
     );
