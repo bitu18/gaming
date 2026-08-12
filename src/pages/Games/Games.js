@@ -6,7 +6,7 @@ import Button from '~/component/Button';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import posterSpellbreaker from '~/assets/images/Poster-Spellbreaker.png';
 // import routes from '~/config/routes';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import Description from './components/Description';
 
@@ -15,7 +15,7 @@ const cx = classNames.bind(styles);
 function Games() {
     // let { gameId } = useParams();
     const [typing, setTyping] = useState('');
-    const [activeSearch, setActiveSearch] = useState(false);
+    const [, setActiveSearch] = useState(false);
     const [description, setDescription] = useState(false);
 
     // gameId = 'spellbreaker';

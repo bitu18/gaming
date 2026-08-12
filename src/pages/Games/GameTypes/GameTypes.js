@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 function GameTypes() {
     const { type } = useParams();
     const [typing, setTyping] = useState('');
-    const [activeSearch, setActiveSearch] = useState(false);
+    const [, setActiveSearch] = useState(false);
 
     const isClassroom = type === 'classroom-screen-games';
     const isMultiplayer = type === 'live-multiplayer-games';
