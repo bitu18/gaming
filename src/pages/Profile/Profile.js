@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import style from './Profile.module.scss';
-import PageTitle from '~/component/PageTitle';
+// import PageTitle from '~/component/PageTitle';
 import PopperWrapper from '~/component/Popper';
 import Button from '~/component/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +14,7 @@ import { actions, useStore } from '~/store';
 
 const cx = classNames.bind(style);
 function Profile() {
-    const [state, dispatch] = useStore();
+    const [dispatch] = useStore();
     const [userInfor, setUserInfor] = useState([]);
     const [openEdit, setOpenEdit] = useState('');
 

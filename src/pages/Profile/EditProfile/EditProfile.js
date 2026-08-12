@@ -3,9 +3,9 @@ import styles from './EditProfile.module.scss';
 import PopperWrapper from '~/component/Popper';
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faXmark } from '@fortawesome/free-solid-svg-icons';
-import Button from '~/component/Button';
-import Tippy from '@tippyjs/react';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+// import Button from '~/component/Button';
+// import Tippy from '@tippyjs/react';
 import { deleteUserAccount, updateUserInfor, userLogout } from '~/serivces/userService';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -15,8 +15,8 @@ const cx = classNames.bind(styles);
 function EditProfile({ userInfor, mode, onClose, onSubmit }) {
     const [username, setUsername] = useState(userInfor?.userName || '');
     const [email, setEmail] = useState(userInfor?.email || '');
-    const [showChangePass, setShowChangePass] = useState(mode === 'password' ? true : false);
-    const [deleteAccount, setDeleteAccount] = useState(mode === 'delete' ? true : false);
+    // const [showChangePass, setShowChangePass] = useState(mode === 'password' ? true : false);
+    // const [deleteAccount, setDeleteAccount] = useState(mode === 'delete' ? true : false);
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
 

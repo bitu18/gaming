@@ -13,7 +13,7 @@ import { actions, useStore } from '~/store';
 const cx = classNames.bind(styles);
 
 function LogIn() {
-    const [state, dispatch] = useStore();
+    const [, dispatch] = useStore();
     const [userNameOrEmail, setUserNameOrEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');

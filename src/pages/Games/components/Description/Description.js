@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Description.module.scss';
 import posterSpellbreaker from '~/assets/images/Poster-Spellbreaker.png';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 import Button from '~/component/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmarkSquare } from '@fortawesome/free-solid-svg-icons';
@@ -9,7 +9,7 @@ import { faXmarkSquare } from '@fortawesome/free-solid-svg-icons';
 const cx = classNames.bind(styles);
 
 function Description({ onClose }) {
-    const { category, gameId } = useParams();
+    // const { category, gameId } = useParams();
     return (
         <div className={cx('wrapper')} onClick={onClose}>
             <div className={cx('card')} onClick={(e) => e.stopPropagation()}>
