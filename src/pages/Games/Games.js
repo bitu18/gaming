@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '~/component/Button';
 import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import posterSpellbreaker from '~/assets/images/Poster-Spellbreaker.png';
+import posterGrimoireTimer from '~/assets/images/Poster-GrimoireTimer.png';
 // import routes from '~/config/routes';
 // import { useParams } from 'react-router-dom';
 import { useState } from 'react';
@@ -79,6 +80,18 @@ function Games() {
                                             />
                                             <h2 className={cx('title')}>Gaming</h2>
                                         </a> */}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className={cx('explore grid')}>
+                                <h2 className={cx('type')}>Tools & Timers</h2>
+                                <div className="row big-gutter">
+                                    <div className="col l-1-7 mt-15">
+                                        <a className={cx('game-item')} href="/play/grimoire-timer">
+                                            <img className={cx('image')} src={posterGrimoireTimer} alt="Grimoire Timer" />
+                                            <h2 className={cx('title')}>Grimoire Timer</h2>
+                                        </a>
                                     </div>
                                 </div>
                             </div>

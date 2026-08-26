@@ -10,6 +10,7 @@ const routes = {
     signup: '/signup',
     games: '/games',
     gamePlayer: '/game/:gameId',
+    simpleGamePlayer: '/play/:gameId',
 
     description: '/description/:type',
     // gameTypes: '/games/:type',

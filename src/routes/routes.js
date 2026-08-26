@@ -11,6 +11,7 @@ import Search from '~/pages/Search';
 import LogIn from '~/pages/LogIn';
 import SignUp from '~/pages/SignUp';
 import GamePlayer from '~/pages/GamePlayer';
+import SimpleGamePlayer from '~/pages/SimpleGamePlayer';
 import Games from '~/pages/Games';
 import GameTypes from '~/pages/Games/GameTypes';
 import Description from '~/pages/Games/components/Description';
@@ -27,6 +28,7 @@ const publicRoutes = [
     { path: config.routes.games, component: Games },
     { path: config.routes.gameTypes, component: GameTypes },
     { path: config.routes.gamePlayer, component: GamePlayer, layout: null },
+    { path: config.routes.simpleGamePlayer, component: SimpleGamePlayer, layout: null },
     { path: config.routes.description, component: Description, layout: null },
 ];
 

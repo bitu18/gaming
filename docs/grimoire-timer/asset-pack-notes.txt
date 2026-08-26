@@ -1,0 +1,4 @@
+Questlix Timer clean asset pack.
+All numbered UI/art PNGs are separate files. The purple asset-name/title labels from the sprite sheet have been excluded.
+Blank frames/buttons intentionally contain no timer numbers or functional text; those should be real HTML/CSS text.
+00_original_design_reference.png is reference-only.

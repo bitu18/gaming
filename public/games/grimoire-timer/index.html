@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grimoire Timer</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#f3ede0;
+    --card:#faf6ec;
+    --ink:#241c33;
+    --purple:#6a3fa0;
+    --purple-dark:#522f80;
+    --purple-deep:#3d2260;
+    --purple-soft:#b79ce0;
+    --purple-bg:#f2ecfb;
+    --pink:#e8749a;
+
+    --jagged: polygon(
+      1.5% 3%, 6% .3%, 12% 2.5%, 18% .3%, 25% 2%, 32% .3%, 40% 2.5%, 48% .3%, 56% 2%, 64% .3%, 72% 2.5%, 80% .3%, 88% 1.5%, 95% .3%, 99% 2.5%,
+      100% 8%, 98.3% 15%, 100% 22%, 97.3% 30%, 100% 38%, 98.3% 46%, 100% 54%, 97.3% 62%, 100% 70%, 98.3% 78%, 100% 86%, 97.3% 94%, 100% 99%,
+      94% 100%, 87% 98%, 80% 100%, 73% 98.3%, 65% 100%, 57% 98%, 49% 100%, 41% 98.3%, 33% 100%, 25% 98%, 17% 100%, 9% 98.3%, 2% 100%,
+      0% 94%, 1.7% 87%, 0% 79%, 2% 71%, 0% 63%, 1.7% 55%, 0% 47%, 2% 39%, 0% 31%, 1.7% 23%, 0% 15%, 2% 7%
+    );
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--page);
+    font-family:'Nunito',system-ui,sans-serif;
+    padding:40px 24px;
+    color:var(--ink);
+  }
+
+  .scene{
+    position:relative;
+    width:100%;
+    max-width:980px;
+    padding:0 70px 30px;
+  }
+
+  /* ---------------- outer card (hand-coded torn frame; no asset was supplied for this) ---------------- */
+  .card{
+    position:relative;
+    background:var(--ink);
+    clip-path:var(--jagged);
+    box-shadow:0 24px 60px rgba(60,40,20,0.18);
+    padding:3px;
+  }
+  .card-fill{
+    background:var(--card);
+    clip-path:var(--jagged);
+    padding:22px 34px 34px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .sparkles{ position:absolute; top:4px; left:0; width:100%; z-index:0; pointer-events:none; opacity:.9; }
+  .sparkles img{ width:100%; display:block; }
+
+  .topbar, .stage-content{ position:relative; z-index:1; width:100%; }
+
+  /* ---------------- topbar ---------------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding-bottom:10px;
+    border-bottom:1.5px solid rgba(36,28,51,0.12);
+  }
+  .mode-toggle{ display:flex; align-items:center; gap:10px; }
+  .mode-divider{ width:1.5px; height:26px; background:rgba(36,28,51,0.15); margin:0 2px; }
+
+  .mode-btn{
+    position:relative; border:none; background:transparent; cursor:pointer;
+    padding:0; display:block; filter:grayscale(70%) opacity(.55);
+    transition:filter .2s, transform .1s;
+  }
+  .mode-btn img{ display:block; width:150px; height:auto; }
+  .mode-btn.active{ filter:none; }
+  .mode-btn:active{ transform:translateY(1px); }
+  .mode-btn .label{
+    position:absolute; top:0; bottom:0; left:36%; right:8%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:.98rem;
+    color:var(--purple-deep);
+  }
+
+  .top-actions{ display:flex; align-items:center; gap:16px; }
+  .icon-plain{
+    border:none; background:transparent; cursor:pointer;
+    padding:2px; display:flex; transition:transform .12s, filter .15s;
+  }
+  .icon-plain img{ width:26px; height:auto; display:block; }
+  .icon-plain:hover{ transform:scale(1.1); }
+  .icon-plain:active{ transform:scale(.9); }
+
+  /* ---------------- title ---------------- */
+  .title-wrap{ position:relative; width:100%; max-width:340px; }
+  .title-wrap img{ width:100%; display:block; opacity:.85; }
+  #customText{
+    position:absolute; inset:0; width:100%; height:100%;
+    background:transparent; border:none; outline:none;
+    text-align:center; font-family:'Fredoka',sans-serif; font-weight:600;
+    font-size:clamp(13px,2.4vw,16px); color:var(--purple-deep);
+    padding:0 16%;
+  }
+  #customText::placeholder{ color:var(--purple-soft); }
+
+  /* ---------------- plaque ---------------- */
+  .plaque-wrap{ position:relative; width:100%; max-width:560px; }
+  .plaque-wrap img{ width:100%; display:block; }
+  .plaque-text-zone{
+    position:absolute; left:11%; right:11%; top:15%; height:55%;
+    display:flex; align-items:center; justify-content:center;
+    cursor:text;
+  }
+  .time-display{
+    font-family:'Fredoka',sans-serif; font-weight:700;
+    font-size:154px; letter-spacing:2px;
+    color:var(--purple-deep);
+    -webkit-text-stroke:1.5px var(--purple-deep);
+  }
+  .time-edit{
+    width:80%; text-align:center; background:transparent; border:none; outline:none;
+    font-family:'Fredoka',sans-serif; font-weight:700; color:var(--purple-deep);
+    font-size:clamp(34px,7vw,60px); letter-spacing:2px;
+  }
+  .face-mood{
+    margin-top:-10px;
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px;
+    letter-spacing:2px; text-transform:uppercase; color:var(--pink);
+    min-height:16px; text-align:center;
+  }
+  .plaque-wrap.done .plaque-text-zone{ animation:glow 1s infinite; border-radius:20px; }
+  @keyframes glow{
+    0%,100%{ box-shadow:none; }
+    50%{ box-shadow:0 0 0 8px rgba(232,116,154,0.25) inset; }
+  }
+
+  /* ---------------- add row ---------------- */
+  .add-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+  .tag-btn{
+    position:relative; border:none; background:transparent; cursor:pointer;
+    padding:0; transition:transform .1s, filter .15s;
+  }
+  .tag-btn img{ display:block; width:132px; height:auto; }
+  .tag-btn span{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:'Fredoka',sans-serif; font-weight:600; font-size:1rem;
+    color:var(--purple-deep);
+  }
+  .tag-btn:hover{ filter:brightness(1.05); }
+  .tag-btn:active{ transform:translateY(2px); }
+
+  .stopwatch-mode .add-row{ display:none; }
+
+  /* ---------------- main bar ---------------- */
+  .main-bar{
+    position:relative; width:100%; max-width:600px; border:none; background:transparent;
+    padding:0; cursor:pointer; transition:filter .15s, transform .1s;
+  }
+  .main-bar img{ width:100%; display:block; }
+  .main-bar:hover{ filter:brightness(1.06); }
+  .main-bar:active{ transform:translateY(2px); }
+  .main-bar .icon-zone{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .main-bar .icon-zone img{ width:9%; height:auto; filter:brightness(0) invert(1); }
+
+  /* ---------------- side decorations ---------------- */
+  .deco{ position:absolute; bottom:-10px; z-index:2; pointer-events:none; }
+  .deco-left{ left:-70px; width:210px; }
+  .deco-right{ right:-76px; width:190px; }
+  .deco img{ width:100%; height:auto; display:block; }
+
+  @media (max-width: 860px){
+    .deco{ display:none; }
+    .scene{ padding:0 4px 10px; max-width:600px; }
+  }
+  @media (max-width: 520px){
+    .mode-btn img{ width:120px; }
+    .card-fill{ padding:18px 16px 26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="card">
+    <div class="card-fill" id="cardFill">
+
+      <div class="sparkles"><img src="assets/03_decorative_sparkles.png" alt=""></div>
+
+      <!-- TOP BAR -->
+      <div class="topbar">
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="timerTab">
+            <img src="assets/04_timer_tab_active_blank.png" alt="">
+            <span class="label">Timer</span>
+          </button>
+          <div class="mode-divider"></div>
+          <button class="mode-btn" id="stopwatchTab">
+            <img src="assets/05_stopwatch_tab_inactive_blank.png" alt="">
+            <span class="label">Stopwatch</span>
+          </button>
+        </div>
+        <div class="top-actions">
+          <button class="icon-plain" id="soundBtn" title="Toggle sound">
+            <img id="soundIcon" src="assets/10_icon_sound_on.png" alt="Sound">
+          </button>
+          <button class="icon-plain" id="resetBtn" title="Reset">
+            <img src="assets/15_icon_reset.png" alt="Reset">
+          </button>
+          <button class="icon-plain" id="maximizeBtn" title="Maximize">
+            <img src="assets/12_icon_fullscreen.png" alt="Fullscreen">
+          </button>
+        </div>
+      </div>
+
+      <div class="stage-content" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
+
+        <div class="title-wrap">
+          <img src="assets/02_top_header_bar_blank.png" alt="">
+          <input id="customText" type="text" maxlength="60" placeholder="Type a title for your timer">
+        </div>
+
+        <!-- PLAQUE (frame image already bakes in the leaves + divider ornament) -->
+        <div class="plaque-wrap" id="plaque">
+          <img src="assets/01_timer_frame_blank.png" alt="">
+          <div class="plaque-text-zone" id="plaqueFill">
+            <div class="time-display" id="timeDisplay">05:00</div>
+          </div>
+        </div>
+        <div class="face-mood" id="faceMood"></div>
+
+        <!-- QUICK ADD -->
+        <div class="add-row" id="addRow">
+          <button class="tag-btn" data-secs="30"><img src="assets/06_small_button_blank.png" alt=""><span>+0:30</span></button>
+          <button class="tag-btn" data-secs="60"><img src="assets/06_small_button_blank.png" alt=""><span>+1:00</span></button>
+          <button class="tag-btn" data-secs="300"><img src="assets/06_small_button_blank.png" alt=""><span>+5:00</span></button>
+        </div>
+
+        <!-- MAIN BAR -->
+        <button class="main-bar" id="startBtn" title="Start / Pause">
+          <img src="assets/07_main_button_blank.png" alt="">
+          <div class="icon-zone"><img id="playIcon" src="assets/13_icon_play.png" alt=""></div>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- LEFT DECORATION: books, candle, crystal -->
+  <div class="deco deco-left"><img src="assets/08_left_decoration.png" alt=""></div>
+
+  <!-- RIGHT DECORATION: witch on books -->
+  <div class="deco deco-right"><img src="assets/09_right_decoration_wizard.png" alt=""></div>
+
+</div>
+
+<script>
+  const timeDisplay = document.getElementById('timeDisplay');
+  const plaqueFill  = document.getElementById('plaqueFill');
+  const plaque      = document.getElementById('plaque');
+  const faceMood    = document.getElementById('faceMood');
+  const startBtn    = document.getElementById('startBtn');
+  const resetBtn    = document.getElementById('resetBtn');
+  const playIcon    = document.getElementById('playIcon');
+  const maximizeBtn = document.getElementById('maximizeBtn');
+  const soundBtn    = document.getElementById('soundBtn');
+  const soundIcon   = document.getElementById('soundIcon');
+  const timerTab    = document.getElementById('timerTab');
+  const stopwatchTab= document.getElementById('stopwatchTab');
+  const cardFill    = document.getElementById('cardFill');
+
+  let mode = 'timer';        // 'timer' | 'stopwatch'
+  let totalSeconds = 300;
+  let remaining = 300;
+  let elapsed = 0;
+  let running = false;
+  let intervalId = null;
+  let soundOn = true;
+  let audioCtx = null;
+
+  function format(s){
+    const m = Math.floor(s/60).toString().padStart(2,'0');
+    const sec = (s%60).toString().padStart(2,'0');
+    return `${m}:${sec}`;
+  }
+
+  function render(){
+    timeDisplay.textContent = mode === 'timer' ? format(remaining) : format(elapsed);
+  }
+
+  function clearDone(){
+    faceMood.textContent = '';
+    plaque.classList.remove('done');
+  }
+
+  function tick(){
+    if(mode === 'timer'){
+      remaining--;
+      if(remaining <= 0){ remaining = 0; render(); finish(); return; }
+      render();
+    } else {
+      elapsed++;
+      render();
+    }
+  }
+
+  function start(){
+    if(running) return;
+    if(mode === 'timer' && remaining <= 0) return;
+    running = true;
+    playIcon.src = 'assets/14_icon_pause.png';
+    intervalId = setInterval(tick, 1000);
+  }
+
+  function pause(){
+    running = false;
+    playIcon.src = 'assets/13_icon_play.png';
+    clearInterval(intervalId);
+  }
+
+  function reset(){
+    pause();
+    if(mode === 'timer'){ remaining = totalSeconds; clearDone(); }
+    else { elapsed = 0; }
+    render();
+  }
+
+  function addTime(sec){
+    if(mode !== 'timer') return;
+    clearDone();
+    if(remaining <= 0 && !running){ totalSeconds = sec; remaining = sec; }
+    else { totalSeconds += sec; remaining += sec; }
+    render();
+  }
+
+  function finish(){
+    pause();
+    faceMood.textContent = "Time's up!";
+    plaque.classList.add('done');
+    chime();
+  }
+
+  // ---- mode switching ----
+  function setMode(m){
+    if(mode === m) return;
+    pause();
+    mode = m;
+    clearDone();
+    const isTimer = m === 'timer';
+    timerTab.classList.toggle('active', isTimer);
+    stopwatchTab.classList.toggle('active', !isTimer);
+    cardFill.classList.toggle('stopwatch-mode', !isTimer);
+    if(isTimer){ remaining = totalSeconds; } else { elapsed = 0; }
+    render();
+  }
+  timerTab.addEventListener('click', ()=> setMode('timer'));
+  stopwatchTab.addEventListener('click', ()=> setMode('stopwatch'));
+
+  // ---- buttons ----
+  startBtn.addEventListener('click', ()=>{
+    if(mode === 'timer' && remaining <= 0){ reset(); }
+    running ? pause() : start();
+  });
+  resetBtn.addEventListener('click', reset);
+
+  document.querySelectorAll('.tag-btn[data-secs]').forEach(btn=>{
+    btn.addEventListener('click', ()=> addTime(parseInt(btn.dataset.secs,10)));
+  });
+
+  // ---- click time to edit (timer mode only) ----
+  plaqueFill.addEventListener('click', ()=>{
+    if(mode !== 'timer' || running) return;
+    const input = document.createElement('input');
+    input.className = 'time-edit';
+    input.value = format(remaining);
+    input.maxLength = 5;
+    plaqueFill.innerHTML = '';
+    plaqueFill.appendChild(input);
+    input.focus();
+    input.select();
+    function commit(){
+      const m = input.value.match(/^(\d{1,3}):?(\d{0,2})$/);
+      let secs = totalSeconds;
+      if(m){
+        const mm = parseInt(m[1]||'0',10);
+        const ss = parseInt(m[2]||'0',10);
+        secs = Math.max(0, mm*60 + Math.min(ss,59));
+      }
+      totalSeconds = secs;
+      remaining = secs;
+      clearDone();
+      plaqueFill.innerHTML = '<div class="time-display" id="timeDisplay">'+format(remaining)+'</div>';
+      window.timeDisplay = document.getElementById('timeDisplay');
+    }
+    input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ input.blur(); } });
+    input.addEventListener('blur', commit, { once:true });
+  });
+
+  // ---- sound ----
+  soundBtn.addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    soundIcon.src = soundOn ? 'assets/10_icon_sound_on.png' : 'assets/11_icon_sound_off.png';
+  });
+  function chime(){
+    if(!soundOn) return;
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const notes = [523, 659, 784, 1047];
+      notes.forEach((f,i)=>{
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.type = 'sine'; o.frequency.value = f;
+        const t = audioCtx.currentTime + i*0.14;
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(0.18, t+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t+0.35);
+        o.start(t); o.stop(t+0.4);
+      });
+    }catch(e){}
+  }
+
+  // ---- maximize / focus ----
+  let focusMode = false;
+  maximizeBtn.addEventListener('click', ()=>{
+    const goingFull = !focusMode;
+    if(goingFull){
+      const el = document.documentElement;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if(req) req.call(el).catch(()=>{});
+    } else if(document.fullscreenElement || document.webkitFullscreenElement){
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if(exit) exit.call(document).catch(()=>{});
+    }
+    focusMode = goingFull;
+  });
+  document.addEventListener('fullscreenchange', ()=>{
+    if(!document.fullscreenElement) focusMode = false;
+  });
+  document.addEventListener('webkitfullscreenchange', ()=>{
+    if(!document.webkitFullscreenElement) focusMode = false;
+  });
+
+  render();
+</script>
+</body>
+</html>
