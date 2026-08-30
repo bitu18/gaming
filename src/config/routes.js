@@ -3,6 +3,7 @@ const routes = {
     profile: '/profile/:nickname',
     feedback: '/feedback',
     worksheet: '/worksheets',
+    teacherTools: '/teacher-tools',
     create: '/create',
     market: '/market',
     search: '/search',

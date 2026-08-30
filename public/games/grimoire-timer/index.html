@@ -37,9 +37,41 @@
   .scene{
     position:relative;
     width:100%;
-    max-width:1040px;
-    padding:0 60px 30px;
+    max-width:1500px;
+    padding:0 70px 36px;
   }
+
+  /* ---------------- site header (sits above the card, matches the Questlix nav) ---------------- */
+  .site-header{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:24px; flex-wrap:wrap;
+    padding:8px 4px 26px;
+  }
+  .logo-link{ display:flex; align-items:center; gap:10px; flex:none; transition:transform .12s, filter .15s; }
+  .logo-link img{ display:block; height:clamp(34px,3.4vw,46px); width:auto; }
+  .logo-link:hover{ transform:scale(1.04); filter:brightness(1.06); }
+  .logo-link:active{ transform:scale(.96); }
+
+  .site-nav{ display:flex; align-items:center; gap:clamp(20px,3vw,44px); flex-wrap:wrap; }
+  .site-nav a{
+    font-family:'Nunito',sans-serif; font-weight:800;
+    font-size:clamp(14px,1.15vw,17px); color:var(--ink);
+    text-decoration:none; opacity:.88; transition:opacity .15s;
+  }
+  .site-nav a:hover{ opacity:1; }
+
+  .site-auth{ display:flex; align-items:center; gap:12px; }
+  .btn-outline, .btn-solid{
+    font-family:'Nunito',sans-serif; font-weight:800;
+    font-size:clamp(13px,1.1vw,16px);
+    padding:10px 24px; border-radius:999px; text-decoration:none;
+    transition:transform .12s, filter .15s; display:inline-block;
+  }
+  .btn-outline{ color:var(--accent); border:2px solid var(--accent); background:#fff; }
+  .btn-outline:hover{ background:#f3f0fe; }
+  .btn-solid{ color:#fff; background:linear-gradient(160deg, var(--btn-top), var(--btn-mid)); border:2px solid transparent; }
+  .btn-solid:hover{ filter:brightness(1.06); }
+  .btn-outline:active, .btn-solid:active{ transform:translateY(1px); }
 
   /* ---------------- card ---------------- */
   .card{
@@ -48,11 +80,11 @@
     border:1.5px solid var(--card-border);
     border-radius:32px;
     box-shadow:0 24px 60px rgba(91,63,224,0.16);
-    padding:32px 44px 40px;
+    padding:clamp(28px,3vw,40px) clamp(28px,4.4vw,64px) clamp(36px,4.6vw,56px);
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:24px;
+    gap:clamp(20px,2.6vw,32px);
     overflow:hidden;
   }
 
@@ -67,11 +99,6 @@
     align-items:center;
     justify-content:space-between;
   }
-  .topbar-left{ display:flex; align-items:center; gap:22px; }
-  .logo-link{ display:block; flex:none; transition:transform .12s, filter .15s; }
-  .logo-link img{ display:block; height:34px; width:auto; }
-  .logo-link:hover{ transform:scale(1.05); filter:brightness(1.08); }
-  .logo-link:active{ transform:scale(.95); }
 
   .mode-toggle{ display:flex; align-items:center; gap:10px; }
 
@@ -80,14 +107,14 @@
     padding:0; display:block; filter:grayscale(65%) opacity(.5);
     transition:filter .2s, transform .1s;
   }
-  .mode-btn img{ display:block; height:52px; width:auto; }
+  .mode-btn img{ display:block; height:clamp(52px,5.2vw,74px); width:auto; }
   .mode-btn.active{ filter:none; }
   .mode-btn:active{ transform:translateY(1px); }
 
-  .top-actions{ display:flex; align-items:center; gap:14px; }
+  .top-actions{ display:flex; align-items:center; gap:clamp(12px,1.4vw,20px); }
   .icon-circle{
     border:none; cursor:pointer; padding:0;
-    width:52px; height:52px; border-radius:50%;
+    width:clamp(52px,5vw,68px); height:clamp(52px,5vw,68px); border-radius:50%;
     display:flex; align-items:center; justify-content:center;
     transition:transform .12s, filter .15s;
   }
@@ -111,18 +138,18 @@
     background:#fff;
     box-shadow:0 6px 16px rgba(91,63,224,0.18);
   }
-  .reset-btn svg{ width:22px; height:22px; }
+  .reset-btn svg{ width:42%; height:42%; }
   .reset-btn:active svg{ transform:rotate(-70deg); }
   .reset-btn svg{ transition:transform .3s ease; stroke:var(--accent-deep); }
 
   /* ---------------- stage ---------------- */
   .stage{
-    display:flex; flex-direction:column; align-items:center; gap:22px;
+    display:flex; flex-direction:column; align-items:center; gap:clamp(20px,2.6vw,30px);
   }
 
   .time-display{
     font-family:'Poppins',sans-serif; font-weight:800;
-    font-size:clamp(56px,9vw,104px); letter-spacing:1px;
+    font-size:clamp(56px,10vw,132px); letter-spacing:1px;
     color:var(--ink);
     cursor:text;
     user-select:none;
@@ -130,31 +157,31 @@
   .time-edit{
     text-align:center; background:transparent; border:none; outline:none;
     font-family:'Poppins',sans-serif; font-weight:800; color:var(--ink);
-    font-size:clamp(44px,7vw,72px); letter-spacing:1px;
+    font-size:clamp(44px,7.5vw,92px); letter-spacing:1px;
     width:60%;
   }
   .face-mood{
     margin-top:-14px;
-    font-family:'Poppins',sans-serif; font-weight:700; font-size:13px;
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:clamp(13px,1.1vw,16px);
     letter-spacing:2px; text-transform:uppercase; color:var(--pink);
     min-height:16px; text-align:center;
   }
 
-  .divider{ width:100%; max-width:480px; height:auto; display:block; }
+  .divider{ width:100%; max-width:640px; height:auto; display:block; }
 
-  .add-row{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+  .add-row{ display:flex; gap:clamp(14px,1.8vw,22px); flex-wrap:wrap; justify-content:center; }
   .tag-btn{
     border:none; background:transparent; cursor:pointer; padding:0;
     transition:transform .1s, filter .15s;
   }
-  .tag-btn img{ display:block; height:58px; width:auto; }
+  .tag-btn img{ display:block; height:clamp(56px,5.6vw,80px); width:auto; }
   .tag-btn:hover{ filter:brightness(1.05); }
   .tag-btn:active{ transform:translateY(2px); }
 
   .stopwatch-mode .add-row{ visibility:hidden; }
 
   .main-bar{
-    position:relative; width:100%; max-width:680px; border:none; background:transparent;
+    position:relative; width:100%; max-width:920px; border:none; background:transparent;
     padding:0; cursor:pointer; transition:filter .15s, transform .1s;
   }
   .main-bar img{ width:100%; display:block; }
@@ -173,45 +200,60 @@
   .pause-patch svg{ width:46%; height:46%; }
 
   /* ---------------- side decorations ---------------- */
-  .deco{ position:absolute; bottom:26px; z-index:2; pointer-events:none; }
-  .deco-left{ left:-34px; width:280px; }
-  .deco-right{ right:-40px; width:290px; }
+  .deco{ position:absolute; bottom:clamp(26px,3.4vw,44px); z-index:2; pointer-events:none; }
+  .deco-left{ left:clamp(-34px,-2.6vw,-10px); width:clamp(280px,20vw,380px); }
+  .deco-right{ right:clamp(-40px,-3vw,-12px); width:clamp(290px,21vw,390px); }
   .deco img{ width:100%; height:auto; display:block; }
 
   @media (max-width: 860px){
     .deco{ display:none; }
     .scene{ padding:0 4px 10px; max-width:640px; }
+    .site-nav{ display:none; }
   }
   @media (max-width: 520px){
     .mode-btn img{ height:42px; }
     .icon-circle{ width:44px; height:44px; }
     .card{ padding:24px 20px 30px; }
-    .topbar-left{ gap:12px; }
-    .logo-link img{ height:26px; }
+    .site-header{ padding:6px 4px 18px; }
+    .btn-outline{ display:none; }
   }
 </style>
 </head>
 <body>
 
 <div class="scene">
+
+  <!-- SITE HEADER: matches the Questlix nav row above the timer card -->
+  <div class="site-header">
+    <a class="logo-link" href="/" target="_top" title="Go to home page">
+      <img src="assets/logo_reference.png" alt="Questlix home">
+    </a>
+    <nav class="site-nav">
+      <a href="/worksheets" target="_top">Worksheets</a>
+      <a href="/teacher-tools" target="_top">Teacher Tools</a>
+      <a href="/games" target="_top">Games</a>
+      <a href="#" target="_top">Resource Library</a>
+      <a href="#" target="_top">Pricing</a>
+    </nav>
+    <div class="site-auth">
+      <a class="btn-outline" href="/login" target="_top">Log in</a>
+      <a class="btn-solid" href="/signup" target="_top">Sign up</a>
+    </div>
+  </div>
+
   <div class="card" id="card">
 
     <div class="sparkles" id="sparkles"></div>
 
     <!-- TOP BAR -->
     <div class="topbar">
-      <div class="topbar-left">
-        <a class="logo-link" href="/" target="_top" title="Go to home page">
-          <img src="assets/logo_reference.png" alt="Questlix home">
-        </a>
-        <div class="mode-toggle">
-          <button class="mode-btn active" id="timerTab">
-            <img src="assets/timer_selected.png" alt="Timer">
-          </button>
-          <button class="mode-btn" id="stopwatchTab">
-            <img src="assets/stopwatch_white.png" alt="Stopwatch">
-          </button>
-        </div>
+      <div class="mode-toggle">
+        <button class="mode-btn active" id="timerTab">
+          <img src="assets/timer_selected.png" alt="Timer">
+        </button>
+        <button class="mode-btn" id="stopwatchTab">
+          <img src="assets/stopwatch_white.png" alt="Stopwatch">
+        </button>
       </div>
       <div class="top-actions">
         <button class="icon-circle sound-btn" id="soundBtn" title="Toggle sound">
@@ -403,31 +445,56 @@
   });
 
   // ---- click time to edit (timer mode only) ----
+  // Digits cascade in from the right (seconds first, like a calculator/OTP
+  // field) rather than overwriting the whole MM:SS string from the left.
   timeDisplay.addEventListener('click', ()=>{
     if(mode !== 'timer' || running) return;
-    const parent = timeDisplay.parentElement;
     const input = document.createElement('input');
     input.className = 'time-edit';
-    input.value = format(remaining);
-    input.maxLength = 5;
+    input.setAttribute('inputmode', 'numeric');
+    input.setAttribute('autocomplete', 'off');
+    let digits = '';
+
+    function renderMask(){
+      const padded = digits.padStart(4, '0').slice(-4);
+      input.value = padded.slice(0, 2) + ':' + padded.slice(2, 4);
+    }
+    renderMask();
+
     timeDisplay.replaceWith(input);
     input.focus();
-    input.select();
+
     function commit(){
-      const m = input.value.match(/^(\d{1,3}):?(\d{0,2})$/);
-      let secs = totalSeconds;
-      if(m){
-        const mm = parseInt(m[1]||'0',10);
-        const ss = parseInt(m[2]||'0',10);
-        secs = Math.max(0, mm*60 + Math.min(ss,59));
+      if(digits.length > 0){
+        const padded = digits.padStart(4, '0').slice(-4);
+        const mm = parseInt(padded.slice(0, 2), 10);
+        const ss = Math.min(59, parseInt(padded.slice(2, 4), 10));
+        totalSeconds = Math.max(0, mm * 60 + ss);
+        remaining = totalSeconds;
+        clearDone();
       }
-      totalSeconds = secs;
-      remaining = secs;
-      clearDone();
       timeDisplay.textContent = format(remaining);
       input.replaceWith(timeDisplay);
     }
-    input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ input.blur(); } });
+
+    input.addEventListener('keydown', e=>{
+      if(e.key >= '0' && e.key <= '9'){
+        e.preventDefault();
+        digits = (digits + e.key).slice(-4);
+        renderMask();
+      } else if(e.key === 'Backspace'){
+        e.preventDefault();
+        digits = digits.slice(0, -1);
+        renderMask();
+      } else if(e.key === 'Enter'){
+        input.blur();
+      } else if(e.key === 'Escape'){
+        digits = '';
+        input.blur();
+      } else if(e.key !== 'Tab'){
+        e.preventDefault();
+      }
+    });
     input.addEventListener('blur', commit, { once:true });
   });
 
