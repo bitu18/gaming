@@ -4,25 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Grimoire Timer</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --page:#f3ede0;
-    --card:#faf6ec;
-    --ink:#241c33;
-    --purple:#6a3fa0;
-    --purple-dark:#522f80;
-    --purple-deep:#3d2260;
-    --purple-soft:#b79ce0;
-    --purple-bg:#f2ecfb;
+    --page:#ffffff;
+    --card-bg-1:#fbfaff;
+    --card-bg-2:#ece6fb;
+    --card-border:rgba(124,58,237,.16);
+    --ink:#0b0a3d;
+    --accent:#5b3fe0;
+    --accent-deep:#492ee2;
+    --btn-top:#7c64ee;
+    --btn-mid:#6e54e2;
+    --btn-bottom:#4d37d0;
     --pink:#e8749a;
-
-    --jagged: polygon(
-      1.5% 3%, 6% .3%, 12% 2.5%, 18% .3%, 25% 2%, 32% .3%, 40% 2.5%, 48% .3%, 56% 2%, 64% .3%, 72% 2.5%, 80% .3%, 88% 1.5%, 95% .3%, 99% 2.5%,
-      100% 8%, 98.3% 15%, 100% 22%, 97.3% 30%, 100% 38%, 98.3% 46%, 100% 54%, 97.3% 62%, 100% 70%, 98.3% 78%, 100% 86%, 97.3% 94%, 100% 99%,
-      94% 100%, 87% 98%, 80% 100%, 73% 98.3%, 65% 100%, 57% 98%, 49% 100%, 41% 98.3%, 33% 100%, 25% 98%, 17% 100%, 9% 98.3%, 2% 100%,
-      0% 94%, 1.7% 87%, 0% 79%, 2% 71%, 0% 63%, 1.7% 55%, 0% 47%, 2% 39%, 0% 31%, 1.7% 23%, 0% 15%, 2% 7%
-    );
   }
 
   *{box-sizing:border-box;}
@@ -42,246 +37,274 @@
   .scene{
     position:relative;
     width:100%;
-    max-width:980px;
-    padding:0 70px 30px;
+    max-width:1040px;
+    padding:0 60px 30px;
   }
 
-  /* ---------------- outer card (hand-coded torn frame; no asset was supplied for this) ---------------- */
+  /* ---------------- card ---------------- */
   .card{
     position:relative;
-    background:var(--ink);
-    clip-path:var(--jagged);
-    box-shadow:0 24px 60px rgba(60,40,20,0.18);
-    padding:3px;
-  }
-  .card-fill{
-    background:var(--card);
-    clip-path:var(--jagged);
-    padding:22px 34px 34px;
+    background:linear-gradient(135deg, var(--card-bg-1) 0%, var(--card-bg-2) 100%);
+    border:1.5px solid var(--card-border);
+    border-radius:32px;
+    box-shadow:0 24px 60px rgba(91,63,224,0.16);
+    padding:32px 44px 40px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:20px;
-    position:relative;
+    gap:24px;
     overflow:hidden;
   }
 
-  .sparkles{ position:absolute; top:4px; left:0; width:100%; z-index:0; pointer-events:none; opacity:.9; }
-  .sparkles img{ width:100%; display:block; }
+  .sparkles{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+  .sparkles svg{ position:absolute; }
 
-  .topbar, .stage-content{ position:relative; z-index:1; width:100%; }
+  .topbar, .stage{ position:relative; z-index:1; width:100%; }
 
   /* ---------------- topbar ---------------- */
   .topbar{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding-bottom:10px;
-    border-bottom:1.5px solid rgba(36,28,51,0.12);
   }
+  .topbar-left{ display:flex; align-items:center; gap:22px; }
+  .logo-link{ display:block; flex:none; transition:transform .12s, filter .15s; }
+  .logo-link img{ display:block; height:34px; width:auto; }
+  .logo-link:hover{ transform:scale(1.05); filter:brightness(1.08); }
+  .logo-link:active{ transform:scale(.95); }
+
   .mode-toggle{ display:flex; align-items:center; gap:10px; }
-  .mode-divider{ width:1.5px; height:26px; background:rgba(36,28,51,0.15); margin:0 2px; }
 
   .mode-btn{
-    position:relative; border:none; background:transparent; cursor:pointer;
-    padding:0; display:block; filter:grayscale(70%) opacity(.55);
+    border:none; background:transparent; cursor:pointer;
+    padding:0; display:block; filter:grayscale(65%) opacity(.5);
     transition:filter .2s, transform .1s;
   }
-  .mode-btn img{ display:block; width:150px; height:auto; }
+  .mode-btn img{ display:block; height:52px; width:auto; }
   .mode-btn.active{ filter:none; }
   .mode-btn:active{ transform:translateY(1px); }
-  .mode-btn .label{
-    position:absolute; top:0; bottom:0; left:36%; right:8%;
+
+  .top-actions{ display:flex; align-items:center; gap:14px; }
+  .icon-circle{
+    border:none; cursor:pointer; padding:0;
+    width:52px; height:52px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
-    font-family:'Fredoka',sans-serif; font-weight:600; font-size:.98rem;
-    color:var(--purple-deep);
+    transition:transform .12s, filter .15s;
+  }
+  .icon-circle:hover{ transform:scale(1.07); }
+  .icon-circle:active{ transform:scale(.92); }
+
+  .sound-btn{ position:relative; background:transparent; }
+  .sound-btn img{ width:100%; height:100%; display:block; }
+  .mute-slash{
+    position:absolute; left:50%; top:50%;
+    width:2px; height:26px; background:#d1467a;
+    transform:translate(-50%,-50%) rotate(45deg);
+    border-radius:2px; opacity:0; transition:opacity .15s;
+  }
+  .sound-btn.muted .mute-slash{ opacity:1; }
+
+  .fullscreen-btn{ background:transparent; }
+  .fullscreen-btn img{ width:100%; height:100%; display:block; }
+
+  .reset-btn{
+    background:#fff;
+    box-shadow:0 6px 16px rgba(91,63,224,0.18);
+  }
+  .reset-btn svg{ width:22px; height:22px; }
+  .reset-btn:active svg{ transform:rotate(-70deg); }
+  .reset-btn svg{ transition:transform .3s ease; stroke:var(--accent-deep); }
+
+  /* ---------------- stage ---------------- */
+  .stage{
+    display:flex; flex-direction:column; align-items:center; gap:22px;
   }
 
-  .top-actions{ display:flex; align-items:center; gap:16px; }
-  .icon-plain{
-    border:none; background:transparent; cursor:pointer;
-    padding:2px; display:flex; transition:transform .12s, filter .15s;
-  }
-  .icon-plain img{ width:26px; height:auto; display:block; }
-  .icon-plain:hover{ transform:scale(1.1); }
-  .icon-plain:active{ transform:scale(.9); }
-
-  /* ---------------- title ---------------- */
-  .title-wrap{ position:relative; width:100%; max-width:340px; }
-  .title-wrap img{ width:100%; display:block; opacity:.85; }
-  #customText{
-    position:absolute; inset:0; width:100%; height:100%;
-    background:transparent; border:none; outline:none;
-    text-align:center; font-family:'Fredoka',sans-serif; font-weight:600;
-    font-size:clamp(13px,2.4vw,16px); color:var(--purple-deep);
-    padding:0 16%;
-  }
-  #customText::placeholder{ color:var(--purple-soft); }
-
-  /* ---------------- plaque ---------------- */
-  .plaque-wrap{ position:relative; width:100%; max-width:560px; }
-  .plaque-wrap img{ width:100%; display:block; }
-  .plaque-text-zone{
-    position:absolute; left:11%; right:11%; top:15%; height:55%;
-    display:flex; align-items:center; justify-content:center;
-    cursor:text;
-  }
   .time-display{
-    font-family:'Fredoka',sans-serif; font-weight:700;
-    font-size:154px; letter-spacing:2px;
-    color:var(--purple-deep);
-    -webkit-text-stroke:1.5px var(--purple-deep);
+    font-family:'Poppins',sans-serif; font-weight:800;
+    font-size:clamp(56px,9vw,104px); letter-spacing:1px;
+    color:var(--ink);
+    cursor:text;
+    user-select:none;
   }
   .time-edit{
-    width:80%; text-align:center; background:transparent; border:none; outline:none;
-    font-family:'Fredoka',sans-serif; font-weight:700; color:var(--purple-deep);
-    font-size:clamp(34px,7vw,60px); letter-spacing:2px;
+    text-align:center; background:transparent; border:none; outline:none;
+    font-family:'Poppins',sans-serif; font-weight:800; color:var(--ink);
+    font-size:clamp(44px,7vw,72px); letter-spacing:1px;
+    width:60%;
   }
   .face-mood{
-    margin-top:-10px;
-    font-family:'Fredoka',sans-serif; font-weight:600; font-size:13px;
+    margin-top:-14px;
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:13px;
     letter-spacing:2px; text-transform:uppercase; color:var(--pink);
     min-height:16px; text-align:center;
   }
-  .plaque-wrap.done .plaque-text-zone{ animation:glow 1s infinite; border-radius:20px; }
-  @keyframes glow{
-    0%,100%{ box-shadow:none; }
-    50%{ box-shadow:0 0 0 8px rgba(232,116,154,0.25) inset; }
-  }
 
-  /* ---------------- add row ---------------- */
-  .add-row{ display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+  .divider{ width:100%; max-width:480px; height:auto; display:block; }
+
+  .add-row{ display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
   .tag-btn{
-    position:relative; border:none; background:transparent; cursor:pointer;
-    padding:0; transition:transform .1s, filter .15s;
+    border:none; background:transparent; cursor:pointer; padding:0;
+    transition:transform .1s, filter .15s;
   }
-  .tag-btn img{ display:block; width:132px; height:auto; }
-  .tag-btn span{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
-    font-family:'Fredoka',sans-serif; font-weight:600; font-size:1rem;
-    color:var(--purple-deep);
-  }
+  .tag-btn img{ display:block; height:58px; width:auto; }
   .tag-btn:hover{ filter:brightness(1.05); }
   .tag-btn:active{ transform:translateY(2px); }
 
-  .stopwatch-mode .add-row{ display:none; }
+  .stopwatch-mode .add-row{ visibility:hidden; }
 
-  /* ---------------- main bar ---------------- */
   .main-bar{
-    position:relative; width:100%; max-width:600px; border:none; background:transparent;
+    position:relative; width:100%; max-width:680px; border:none; background:transparent;
     padding:0; cursor:pointer; transition:filter .15s, transform .1s;
   }
   .main-bar img{ width:100%; display:block; }
-  .main-bar:hover{ filter:brightness(1.06); }
+  .main-bar:hover{ filter:brightness(1.05); }
   .main-bar:active{ transform:translateY(2px); }
-  .main-bar .icon-zone{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
-  .main-bar .icon-zone img{ width:9%; height:auto; filter:brightness(0) invert(1); }
+
+  .pause-patch{
+    display:none;
+    position:absolute; left:50%; top:50%;
+    transform:translate(-50%,-50%);
+    width:11%; aspect-ratio:1/1; border-radius:50%;
+    background:var(--btn-mid);
+    align-items:center; justify-content:center;
+  }
+  .running .pause-patch{ display:flex; }
+  .pause-patch svg{ width:46%; height:46%; }
 
   /* ---------------- side decorations ---------------- */
-  .deco{ position:absolute; bottom:-10px; z-index:2; pointer-events:none; }
-  .deco-left{ left:-70px; width:210px; }
-  .deco-right{ right:-76px; width:190px; }
+  .deco{ position:absolute; bottom:26px; z-index:2; pointer-events:none; }
+  .deco-left{ left:-34px; width:280px; }
+  .deco-right{ right:-40px; width:290px; }
   .deco img{ width:100%; height:auto; display:block; }
 
   @media (max-width: 860px){
     .deco{ display:none; }
-    .scene{ padding:0 4px 10px; max-width:600px; }
+    .scene{ padding:0 4px 10px; max-width:640px; }
   }
   @media (max-width: 520px){
-    .mode-btn img{ width:120px; }
-    .card-fill{ padding:18px 16px 26px; }
+    .mode-btn img{ height:42px; }
+    .icon-circle{ width:44px; height:44px; }
+    .card{ padding:24px 20px 30px; }
+    .topbar-left{ gap:12px; }
+    .logo-link img{ height:26px; }
   }
 </style>
 </head>
 <body>
 
 <div class="scene">
-  <div class="card">
-    <div class="card-fill" id="cardFill">
+  <div class="card" id="card">
 
-      <div class="sparkles"><img src="assets/03_decorative_sparkles.png" alt=""></div>
+    <div class="sparkles" id="sparkles"></div>
 
-      <!-- TOP BAR -->
-      <div class="topbar">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <a class="logo-link" href="/" target="_top" title="Go to home page">
+          <img src="assets/logo_reference.png" alt="Questlix home">
+        </a>
         <div class="mode-toggle">
           <button class="mode-btn active" id="timerTab">
-            <img src="assets/04_timer_tab_active_blank.png" alt="">
-            <span class="label">Timer</span>
+            <img src="assets/timer_selected.png" alt="Timer">
           </button>
-          <div class="mode-divider"></div>
           <button class="mode-btn" id="stopwatchTab">
-            <img src="assets/05_stopwatch_tab_inactive_blank.png" alt="">
-            <span class="label">Stopwatch</span>
-          </button>
-        </div>
-        <div class="top-actions">
-          <button class="icon-plain" id="soundBtn" title="Toggle sound">
-            <img id="soundIcon" src="assets/10_icon_sound_on.png" alt="Sound">
-          </button>
-          <button class="icon-plain" id="resetBtn" title="Reset">
-            <img src="assets/15_icon_reset.png" alt="Reset">
-          </button>
-          <button class="icon-plain" id="maximizeBtn" title="Maximize">
-            <img src="assets/12_icon_fullscreen.png" alt="Fullscreen">
+            <img src="assets/stopwatch_white.png" alt="Stopwatch">
           </button>
         </div>
       </div>
-
-      <div class="stage-content" style="display:flex;flex-direction:column;align-items:center;gap:20px;">
-
-        <div class="title-wrap">
-          <img src="assets/02_top_header_bar_blank.png" alt="">
-          <input id="customText" type="text" maxlength="60" placeholder="Type a title for your timer">
-        </div>
-
-        <!-- PLAQUE (frame image already bakes in the leaves + divider ornament) -->
-        <div class="plaque-wrap" id="plaque">
-          <img src="assets/01_timer_frame_blank.png" alt="">
-          <div class="plaque-text-zone" id="plaqueFill">
-            <div class="time-display" id="timeDisplay">05:00</div>
-          </div>
-        </div>
-        <div class="face-mood" id="faceMood"></div>
-
-        <!-- QUICK ADD -->
-        <div class="add-row" id="addRow">
-          <button class="tag-btn" data-secs="30"><img src="assets/06_small_button_blank.png" alt=""><span>+0:30</span></button>
-          <button class="tag-btn" data-secs="60"><img src="assets/06_small_button_blank.png" alt=""><span>+1:00</span></button>
-          <button class="tag-btn" data-secs="300"><img src="assets/06_small_button_blank.png" alt=""><span>+5:00</span></button>
-        </div>
-
-        <!-- MAIN BAR -->
-        <button class="main-bar" id="startBtn" title="Start / Pause">
-          <img src="assets/07_main_button_blank.png" alt="">
-          <div class="icon-zone"><img id="playIcon" src="assets/13_icon_play.png" alt=""></div>
+      <div class="top-actions">
+        <button class="icon-circle sound-btn" id="soundBtn" title="Toggle sound">
+          <img src="assets/sound_button.png" alt="Sound">
+          <span class="mute-slash"></span>
         </button>
-
+        <button class="icon-circle reset-btn" id="resetBtn" title="Reset">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><polyline points="20 3 20 8 15 8"/></svg>
+        </button>
+        <button class="icon-circle fullscreen-btn" id="maximizeBtn" title="Maximize">
+          <img src="assets/fullscreen_button.png" alt="Fullscreen">
+        </button>
       </div>
     </div>
+
+    <!-- STAGE -->
+    <div class="stage">
+      <div class="time-display" id="timeDisplay">05:00</div>
+      <div class="face-mood" id="faceMood"></div>
+
+      <img class="divider" src="assets/star_divider.png" alt="">
+
+      <div class="add-row" id="addRow">
+        <button class="tag-btn" data-secs="30"><img src="assets/add_30_seconds.png" alt="+0:30"></button>
+        <button class="tag-btn" data-secs="60"><img src="assets/add_1_minute.png" alt="+1:00"></button>
+        <button class="tag-btn" data-secs="300"><img src="assets/add_5_minutes.png" alt="+5:00"></button>
+      </div>
+
+      <button class="main-bar" id="startBtn" title="Start / Pause">
+        <img src="assets/play_button.png" alt="">
+        <div class="pause-patch" id="pausePatch">
+          <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4.5" height="16" rx="1.2" fill="#fff"/><rect x="13.5" y="4" width="4.5" height="16" rx="1.2" fill="#fff"/></svg>
+        </div>
+      </button>
+    </div>
+
   </div>
 
-  <!-- LEFT DECORATION: books, candle, crystal -->
-  <div class="deco deco-left"><img src="assets/08_left_decoration.png" alt=""></div>
+  <!-- LEFT DECORATION: hourglass + clouds -->
+  <div class="deco deco-left"><img src="assets/left_clouds.png" alt=""></div>
 
-  <!-- RIGHT DECORATION: witch on books -->
-  <div class="deco deco-right"><img src="assets/09_right_decoration_wizard.png" alt=""></div>
+  <!-- RIGHT DECORATION: stopwatch + clouds -->
+  <div class="deco deco-right"><img src="assets/right_clouds.png" alt=""></div>
 
 </div>
 
 <script>
   const timeDisplay = document.getElementById('timeDisplay');
-  const plaqueFill  = document.getElementById('plaqueFill');
-  const plaque      = document.getElementById('plaque');
+  const card        = document.getElementById('card');
   const faceMood    = document.getElementById('faceMood');
   const startBtn    = document.getElementById('startBtn');
   const resetBtn    = document.getElementById('resetBtn');
-  const playIcon    = document.getElementById('playIcon');
   const maximizeBtn = document.getElementById('maximizeBtn');
   const soundBtn    = document.getElementById('soundBtn');
-  const soundIcon   = document.getElementById('soundIcon');
   const timerTab    = document.getElementById('timerTab');
   const stopwatchTab= document.getElementById('stopwatchTab');
-  const cardFill    = document.getElementById('cardFill');
+
+  // ---- scattered sparkle background (no full-canvas asset was provided) ----
+  (function drawSparkles(){
+    const wrap = document.getElementById('sparkles');
+    const SPARKLE = (x,y,s,color)=>`<path transform="translate(${x} ${y})" d="M${s} 0 L${s*1.3} ${s*0.7} L${s*2.2} ${s} L${s*1.3} ${s*1.3} L${s} ${s*2.2} L${s*0.7} ${s*1.3} L0 ${s} L${s*0.7} ${s*0.7} Z" fill="${color}"/>`;
+    const STAR = (x,y,r,color,filled)=>{
+      let d='', cx=r, cy=r;
+      for(let i=0;i<10;i++){
+        const ang = Math.PI/5*i - Math.PI/2;
+        const rad = i%2===0 ? r : r*0.42;
+        const px = cx + rad*Math.cos(ang), py = cy + rad*Math.sin(ang);
+        d += (i===0?'M':'L') + px.toFixed(1) + ' ' + py.toFixed(1) + ' ';
+      }
+      d += 'Z';
+      return `<svg style="position:absolute;left:${x}%;top:${y}%;width:${r*2}px;height:${r*2}px;" viewBox="0 0 ${r*2} ${r*2}"><path d="${d}" fill="${filled?color:'none'}" stroke="${color}" stroke-width="2"/></svg>`;
+    };
+    const DOT = (x,y,r,color,filled)=>`<svg style="position:absolute;left:${x}%;top:${y}%;width:${r*2}px;height:${r*2}px;" viewBox="0 0 ${r*2} ${r*2}"><circle cx="${r}" cy="${r}" r="${r-1.5}" fill="${filled?color:'none'}" stroke="${color}" stroke-width="2"/></svg>`;
+    const DIAMOND = (x,y,r,color)=>`<svg style="position:absolute;left:${x}%;top:${y}%;width:${r*2}px;height:${r*2}px;" viewBox="0 0 ${r*2} ${r*2}"><rect x="${r*0.3}" y="${r*0.3}" width="${r*1.4}" height="${r*1.4}" fill="none" stroke="${color}" stroke-width="2" transform="rotate(45 ${r} ${r})"/></svg>`;
+    const SPARK = (x,y,r,color)=>`<svg style="position:absolute;left:${x}%;top:${y}%;width:${r*2}px;height:${r*2}px;" viewBox="0 0 ${r*2} ${r*2}"><path d="M${r} 0 C${r*1.1} ${r*0.85} ${r*1.15} ${r*0.9} ${r*2} ${r} C${r*1.15} ${r*1.1} ${r*1.1} ${r*1.15} ${r} ${r*2} C${r*0.9} ${r*1.15} ${r*0.85} ${r*1.1} 0 ${r} C${r*0.85} ${r*0.9} ${r*0.9} ${r*0.85} ${r} 0 Z" fill="${color}"/></svg>`;
+
+    const items = [
+      SPARK(6,20,9,'#8b6ae0'),
+      SPARK(25,26,7,'#e88fb0'),
+      STAR(13,32,15,'#8fb4ea',false),
+      DOT(9,45,5,'#e88fb0',true),
+      DIAMOND(21,55,8,'#8b6ae0'),
+
+      SPARK(74,17,10,'#8b6ae0'),
+      STAR(81,22,17,'#8b6ae0',false),
+      DOT(94,32,5,'#6fa8e0',true),
+      STAR(79,36,10,'#f0b84a',true),
+      DOT(89,45,5,'#e88fb0',true),
+      DIAMOND(92,54,7,'#6fa8e0'),
+      SPARK(90,60,6,'#8b6ae0'),
+    ];
+    wrap.innerHTML = items.join('');
+  })();
 
   let mode = 'timer';        // 'timer' | 'stopwatch'
   let totalSeconds = 300;
@@ -304,7 +327,6 @@
 
   function clearDone(){
     faceMood.textContent = '';
-    plaque.classList.remove('done');
   }
 
   function tick(){
@@ -322,13 +344,13 @@
     if(running) return;
     if(mode === 'timer' && remaining <= 0) return;
     running = true;
-    playIcon.src = 'assets/14_icon_pause.png';
+    card.classList.add('running');
     intervalId = setInterval(tick, 1000);
   }
 
   function pause(){
     running = false;
-    playIcon.src = 'assets/13_icon_play.png';
+    card.classList.remove('running');
     clearInterval(intervalId);
   }
 
@@ -350,7 +372,6 @@
   function finish(){
     pause();
     faceMood.textContent = "Time's up!";
-    plaque.classList.add('done');
     chime();
   }
 
@@ -363,7 +384,7 @@
     const isTimer = m === 'timer';
     timerTab.classList.toggle('active', isTimer);
     stopwatchTab.classList.toggle('active', !isTimer);
-    cardFill.classList.toggle('stopwatch-mode', !isTimer);
+    card.classList.toggle('stopwatch-mode', !isTimer);
     if(isTimer){ remaining = totalSeconds; } else { elapsed = 0; }
     render();
   }
@@ -382,14 +403,14 @@
   });
 
   // ---- click time to edit (timer mode only) ----
-  plaqueFill.addEventListener('click', ()=>{
+  timeDisplay.addEventListener('click', ()=>{
     if(mode !== 'timer' || running) return;
+    const parent = timeDisplay.parentElement;
     const input = document.createElement('input');
     input.className = 'time-edit';
     input.value = format(remaining);
     input.maxLength = 5;
-    plaqueFill.innerHTML = '';
-    plaqueFill.appendChild(input);
+    timeDisplay.replaceWith(input);
     input.focus();
     input.select();
     function commit(){
@@ -403,8 +424,8 @@
       totalSeconds = secs;
       remaining = secs;
       clearDone();
-      plaqueFill.innerHTML = '<div class="time-display" id="timeDisplay">'+format(remaining)+'</div>';
-      window.timeDisplay = document.getElementById('timeDisplay');
+      timeDisplay.textContent = format(remaining);
+      input.replaceWith(timeDisplay);
     }
     input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ input.blur(); } });
     input.addEventListener('blur', commit, { once:true });
@@ -413,7 +434,7 @@
   // ---- sound ----
   soundBtn.addEventListener('click', ()=>{
     soundOn = !soundOn;
-    soundIcon.src = soundOn ? 'assets/10_icon_sound_on.png' : 'assets/11_icon_sound_off.png';
+    soundBtn.classList.toggle('muted', !soundOn);
   });
   function chime(){
     if(!soundOn) return;
