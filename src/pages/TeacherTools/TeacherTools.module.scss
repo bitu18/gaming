@@ -28,12 +28,24 @@
         }
     }
 
-    .image {
+    .icon-tile {
         width: 100%;
         height: 200px;
-        object-fit: cover;
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-radius: 10px;
+        background: linear-gradient(135deg, #fbfaff 0%, #ece6fb 100%);
+        border: 1.5px solid rgba(124, 58, 237, 0.16);
+        padding: 20px;
+    }
+    .icon {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;
+        display: block;
     }
     .title {
         margin: 6px 0;

@@ -385,6 +385,7 @@
   function start(){
     if(running) return;
     if(mode === 'timer' && remaining <= 0) return;
+    ensureAudio();
     running = true;
     card.classList.add('running');
     intervalId = setInterval(tick, 1000);
@@ -503,22 +504,38 @@
     soundOn = !soundOn;
     soundBtn.classList.toggle('muted', !soundOn);
   });
-  function chime(){
-    if(!soundOn) return;
+  function ensureAudio(){
     try{
       audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-      const notes = [523, 659, 784, 1047];
-      notes.forEach((f,i)=>{
-        const o = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        o.connect(g); g.connect(audioCtx.destination);
-        o.type = 'sine'; o.frequency.value = f;
-        const t = audioCtx.currentTime + i*0.14;
-        g.gain.setValueAtTime(0.0001, t);
-        g.gain.exponentialRampToValueAtTime(0.18, t+0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001, t+0.35);
-        o.start(t); o.stop(t+0.4);
-      });
+      if(audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
+    }catch(e){}
+  }
+
+  // Repeating two-tone alarm ring (like a classic phone/bell ring) rather
+  // than a single soft chime, so it's unmistakable when the timer ends.
+  function chime(){
+    if(!soundOn) return;
+    ensureAudio();
+    if(!audioCtx) return;
+    try{
+      const RINGS = 5;
+      const RING_DUR = 0.28;
+      const GAP = 0.14;
+      for(let i=0;i<RINGS;i++){
+        const t0 = audioCtx.currentTime + i*(RING_DUR+GAP);
+        [880, 1108].forEach((f,j)=>{
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g); g.connect(audioCtx.destination);
+          o.type = 'triangle';
+          o.frequency.value = f;
+          const t = t0 + j*0.09;
+          g.gain.setValueAtTime(0.0001, t);
+          g.gain.exponentialRampToValueAtTime(0.24, t+0.015);
+          g.gain.exponentialRampToValueAtTime(0.0001, t+RING_DUR*0.75);
+          o.start(t); o.stop(t+RING_DUR);
+        });
+      }
     }catch(e){}
   }
 

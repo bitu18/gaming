@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './TeacherTools.module.scss';
 import TitlePage from '~/component/TitlePage';
-import posterGrimoireTimer from '~/assets/images/Poster-GrimoireTimer.png';
+import iconGrimoireTimer from '~/assets/images/Icon-GrimoireTimer.png';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +16,9 @@ function TeacherTools() {
                     <div className="row big-gutter">
                         <div className="col l-1-7 mt-15">
                             <a className={cx('tool-item')} href="/play/grimoire-timer">
-                                <img className={cx('image')} src={posterGrimoireTimer} alt="Grimoire Timer" />
+                                <div className={cx('icon-tile')}>
+                                    <img className={cx('icon')} src={iconGrimoireTimer} alt="Grimoire Timer" />
+                                </div>
                                 <h2 className={cx('title')}>Grimoire Timer</h2>
                             </a>
                         </div>
