@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Search Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --page:#ffffff;
+    --card-bg-1:#fbfaff;
+    --card-bg-2:#ece6fb;
+    --card-border:rgba(124,58,237,.16);
+    --ink:#0b0a3d;
+    --ink-soft:#4a4770;
+    --accent:#5b3fe0;
+    --accent-deep:#492ee2;
+    --btn-top:#7c64ee;
+    --btn-mid:#6e54e2;
+    --btn-bottom:#4d37d0;
+    --pink:#e8749a;
+    --gold:#e0a83c;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--page);
+    font-family:'Nunito',system-ui,sans-serif;
+    padding:36px 20px 60px;
+    color:var(--ink);
+  }
+
+  .scene{
+    position:relative;
+    width:100%;
+    max-width:1500px;
+    margin:0 auto;
+    padding:0 60px;
+  }
+
+  /* ---------------- site header ---------------- */
+  .site-header{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:24px; flex-wrap:wrap;
+    padding:8px 4px 22px;
+  }
+  .logo-link{ display:flex; align-items:center; gap:10px; flex:none; font-family:'Poppins',sans-serif; font-weight:800; font-size:clamp(18px,2vw,24px); color:var(--accent-deep); text-decoration:none; }
+  .logo-link .bottle{ font-size:1.3em; }
+  .site-nav{ display:flex; align-items:center; gap:clamp(20px,3vw,44px); flex-wrap:wrap; }
+  .site-nav a{ font-family:'Nunito',sans-serif; font-weight:800; font-size:clamp(14px,1.15vw,17px); color:var(--ink); text-decoration:none; opacity:.88; transition:opacity .15s; }
+  .site-nav a:hover{ opacity:1; }
+  .site-auth{ display:flex; align-items:center; gap:12px; }
+  .btn-outline, .btn-solid{
+    font-family:'Nunito',sans-serif; font-weight:800; font-size:clamp(13px,1.1vw,16px);
+    padding:10px 24px; border-radius:999px; text-decoration:none; display:inline-block;
+    transition:transform .12s, filter .15s;
+  }
+  .btn-outline{ color:var(--accent); border:2px solid var(--accent); background:#fff; }
+  .btn-outline:hover{ background:#f3f0fe; }
+  .btn-solid{ color:#fff; background:linear-gradient(160deg, var(--btn-top), var(--btn-mid)); border:2px solid transparent; }
+  .btn-solid:hover{ filter:brightness(1.06); }
+  .btn-outline:active, .btn-solid:active{ transform:translateY(1px); }
+
+  /* ---------------- page title ---------------- */
+  .page-title{ text-align:center; position:relative; padding:10px 0 28px; }
+  .page-title h1{
+    font-family:'Poppins',sans-serif; font-weight:800; margin:0;
+    font-size:clamp(28px,4vw,46px); color:var(--ink);
+  }
+  .page-title .subtitle{ margin:10px 0 4px; font-size:clamp(15px,1.6vw,19px); font-weight:800; color:var(--ink-soft); }
+  .page-title .hint{ margin:0; font-size:clamp(13px,1.2vw,15px); color:var(--ink-soft); opacity:.85; }
+
+  /* ---------------- workspace card ---------------- */
+  .workspace-wrap{ position:relative; }
+  .workspace{
+    position:relative;
+    background:linear-gradient(135deg, var(--card-bg-1) 0%, var(--card-bg-2) 100%);
+    border:1.5px solid var(--card-border);
+    border-radius:28px;
+    box-shadow:0 24px 60px rgba(91,63,224,0.14);
+    padding:clamp(24px,3vw,40px);
+    overflow:hidden;
+  }
+  .sparkles{ position:absolute; inset:0; z-index:0; pointer-events:none; }
+  .sparkles svg{ position:absolute; }
+
+  .columns{
+    position:relative; z-index:1;
+    display:grid; grid-template-columns:1fr 1.35fr; gap:clamp(18px,2.4vw,30px);
+    align-items:start;
+  }
+
+  .panel{
+    background:#fff; border:1.5px solid var(--card-border); border-radius:18px;
+    padding:clamp(18px,2vw,26px); box-shadow:0 6px 18px rgba(91,63,224,0.06);
+  }
+  .panel + .panel{ margin-top:18px; }
+
+  .panel-head{ display:flex; align-items:flex-start; gap:12px; margin-bottom:14px; }
+  .step{
+    flex:none; width:30px; height:30px; border-radius:50%;
+    background:linear-gradient(160deg, var(--btn-top), var(--btn-mid)); color:#fff;
+    font-family:'Poppins',sans-serif; font-weight:800; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .panel-head h2{ margin:0 0 3px; font-family:'Poppins',sans-serif; font-weight:700; font-size:19px; color:var(--ink); }
+  .panel-head p{ margin:0; font-size:13.5px; color:var(--ink-soft); }
+
+  #wordsInput{
+    width:100%; min-height:120px; resize:vertical;
+    border:1.5px solid var(--card-border); border-radius:12px;
+    padding:12px 14px; font-family:'Nunito',sans-serif; font-size:14.5px; color:var(--ink);
+    outline:none; transition:border-color .15s;
+  }
+  #wordsInput:focus{ border-color:var(--accent); }
+  .word-count{ margin-top:8px; font-size:13px; font-weight:800; color:var(--ink-soft); }
+  .word-count span{ color:var(--accent-deep); }
+
+  .settings-row{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:16px; }
+  .field label{ display:block; font-size:13px; font-weight:800; color:var(--ink); margin-bottom:6px; }
+  .field select{
+    width:100%; padding:9px 10px; border-radius:10px; border:1.5px solid var(--card-border);
+    font-family:'Nunito',sans-serif; font-weight:700; font-size:13.5px; color:var(--ink);
+    background:#fff; cursor:pointer; outline:none;
+  }
+  .field select:focus{ border-color:var(--accent); }
+
+  .toggle-row{ display:flex; flex-direction:column; gap:12px; }
+  .toggle{ display:flex; align-items:center; gap:10px; cursor:pointer; font-size:14px; font-weight:800; color:var(--ink); user-select:none; }
+  .toggle input{ position:absolute; opacity:0; width:0; height:0; }
+  .toggle .slider{
+    position:relative; flex:none; width:42px; height:24px; border-radius:999px;
+    background:#ddd6f7; transition:background .18s;
+  }
+  .toggle .slider::before{
+    content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; border-radius:50%;
+    background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:transform .18s;
+  }
+  .toggle input:checked + .slider{ background:linear-gradient(160deg, var(--btn-top), var(--btn-mid)); }
+  .toggle input:checked + .slider::before{ transform:translateX(18px); }
+
+  .generate-btn{
+    width:100%; margin-top:18px; border:none; cursor:pointer;
+    padding:16px; border-radius:999px;
+    background:linear-gradient(160deg, var(--btn-top) 0%, var(--btn-mid) 55%, var(--btn-bottom) 100%);
+    color:#fff; font-family:'Poppins',sans-serif; font-weight:700; font-size:16px;
+    box-shadow:0 10px 24px rgba(91,63,224,0.35);
+    transition:filter .15s, transform .1s;
+  }
+  .generate-btn:hover{ filter:brightness(1.05); }
+  .generate-btn:active{ transform:translateY(2px); }
+  .gen-warning{ margin-top:10px; font-size:12.5px; font-weight:700; color:#c0392b; text-align:center; min-height:16px; }
+
+  /* ---------------- preview panel ---------------- */
+  .preview-panel{ display:flex; flex-direction:column; gap:16px; }
+  .preview-toolbar{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+  .view-tabs{ display:flex; gap:8px; background:#f3f0fe; padding:5px; border-radius:999px; }
+  .view-tab{
+    border:none; background:transparent; cursor:pointer; padding:9px 18px; border-radius:999px;
+    font-family:'Nunito',sans-serif; font-weight:800; font-size:13.5px; color:var(--ink-soft);
+    transition:background .15s, color .15s;
+  }
+  .view-tab.active{ background:#fff; color:var(--accent-deep); box-shadow:0 3px 10px rgba(91,63,224,0.18); }
+  .view-tab:disabled{ opacity:.45; cursor:not-allowed; }
+
+  .action-btns{ display:flex; gap:10px; }
+  .icon-action{
+    display:flex; align-items:center; gap:7px; border:1.5px solid var(--card-border); background:#fff;
+    padding:9px 16px; border-radius:999px; cursor:pointer;
+    font-family:'Nunito',sans-serif; font-weight:800; font-size:13px; color:var(--accent-deep);
+    transition:background .15s, border-color .15s;
+  }
+  .icon-action:hover{ background:#f6f3ff; border-color:var(--accent); }
+  .icon-action svg{ width:15px; height:15px; }
+
+  .puzzle-area{
+    border:1.5px solid #eee; border-radius:16px; padding:clamp(16px,2vw,26px);
+    background:#fff; text-align:center;
+  }
+  .puzzle-title{
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:clamp(19px,2vw,25px);
+    color:var(--ink); outline:none; border-radius:8px; padding:2px 8px; display:inline-block;
+    cursor:text;
+  }
+  .puzzle-title:hover, .puzzle-title:focus{ background:#f6f3ff; }
+  .puzzle-sub{ margin:4px 0 18px; font-size:13.5px; color:var(--ink-soft); font-weight:700; }
+
+  .puzzle-body{ display:flex; gap:26px; justify-content:center; align-items:flex-start; flex-wrap:wrap; }
+
+  #grid{ border-collapse:collapse; margin:0 auto; }
+  #grid td{
+    width:26px; height:26px; text-align:center; vertical-align:middle;
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:13px; color:var(--ink);
+    border:1px solid #eee;
+  }
+  #grid td.answer-cell{ background:#e3d9fc; color:var(--accent-deep); border-radius:4px; }
+
+  .word-list-side{ text-align:left; min-width:150px; }
+  .word-list-side h3{ margin:0 0 10px; font-family:'Poppins',sans-serif; font-size:14px; font-weight:700; color:var(--ink); }
+  .word-list-side ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:7px; }
+  .word-list-side li{
+    font-size:13.5px; font-weight:800; color:var(--ink-soft);
+    background:#f6f3ff; padding:5px 10px; border-radius:8px;
+  }
+
+  .puzzle-footer{
+    margin-top:22px; padding-top:14px; border-top:1.5px dashed #eee;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+  .puzzle-footer .brand{ font-family:'Poppins',sans-serif; font-weight:800; font-size:13px; color:var(--accent-deep); }
+  .puzzle-footer .tagline{ font-size:12px; font-weight:700; color:var(--ink-soft); }
+
+  /* ---------------- side decorations ---------------- */
+  .deco{ position:absolute; z-index:2; pointer-events:none; }
+  .deco-tl{ top:-64px; left:-14px; width:150px; }
+  .deco-tr{ top:-96px; right:20px; width:120px; }
+  .deco-bl{ bottom:clamp(-40px,-3vw,-16px); left:-36px; width:200px; }
+  .deco-br{ bottom:clamp(-44px,-3.4vw,-18px); right:-32px; width:170px; }
+  .deco img, .deco svg{ width:100%; height:auto; display:block; }
+
+  @media (max-width: 980px){
+    .columns{ grid-template-columns:1fr; }
+    .deco{ display:none; }
+    .scene{ padding:0 16px; }
+  }
+  @media (max-width: 560px){
+    .settings-row{ grid-template-columns:1fr; }
+    .site-nav{ display:none; }
+    .btn-outline{ display:none; }
+  }
+
+  @media print{
+    .site-header, .page-title, .col-left, .preview-toolbar, .deco, .sparkles, .workspace{ all:unset; }
+    body{ padding:0; }
+    .puzzle-area{ border:none; }
+    .columns{ display:block; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+  <!-- SITE HEADER -->
+  <div class="site-header">
+    <a class="logo-link" href="/" target="_top" title="Go to home page">
+      <span class="bottle">🧪</span> Questlix
+    </a>
+    <nav class="site-nav">
+      <a href="/worksheets" target="_top">Worksheets</a>
+      <a href="/teacher-tools" target="_top">Teacher Tools</a>
+      <a href="/games" target="_top">Games</a>
+      <a href="#" target="_top">Resource Library</a>
+      <a href="#" target="_top">Pricing</a>
+    </nav>
+    <div class="site-auth">
+      <a class="btn-outline" href="/login" target="_top">Log in</a>
+      <a class="btn-solid" href="/signup" target="_top">Sign up</a>
+    </div>
+  </div>
+
+  <div class="page-title">
+    <h1>🔍 Word Search Generator</h1>
+    <p class="subtitle">Create custom word search puzzles in seconds!</p>
+    <p class="hint">Add your words, choose settings, and generate printable puzzles for classroom, home, or fun.</p>
+  </div>
+
+  <div class="workspace-wrap">
+    <div class="deco deco-tl">
+      <svg viewBox="0 0 170 190" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="70" cy="180" rx="30" ry="6" fill="#c9b8f0" opacity=".5"/>
+        <line x1="98" y1="98" x2="150" y2="150" stroke="#5b3fe0" stroke-width="16" stroke-linecap="round"/>
+        <line x1="98" y1="98" x2="150" y2="150" stroke="#7c64ee" stroke-width="8" stroke-linecap="round"/>
+        <circle cx="62" cy="62" r="52" fill="#dcebff" stroke="#5b3fe0" stroke-width="10"/>
+        <circle cx="62" cy="62" r="52" fill="none" stroke="#4d37d0" stroke-width="3" opacity=".4"/>
+        <ellipse cx="44" cy="42" rx="16" ry="10" fill="#ffffff" opacity=".55" transform="rotate(-30 44 42)"/>
+        <path d="M20 8 L26 20 L14 20 Z" fill="#5b3fe0"/>
+        <path d="M110 10 l4 10 10 4 -10 4 -4 10 -4 -10 -10 -4 10 -4z" fill="#8b6ae0"/>
+      </svg>
+    </div>
+    <div class="deco deco-tr">
+      <svg viewBox="0 0 180 170" xmlns="http://www.w3.org/2000/svg">
+        <g transform="rotate(8 90 85)">
+          <rect x="20" y="10" width="120" height="140" rx="10" fill="#fff" stroke="#e4defb" stroke-width="2"/>
+          <line x1="34" y1="34" x2="126" y2="34" stroke="#f1eefc" stroke-width="4"/>
+          <line x1="34" y1="126" x2="126" y2="126" stroke="#f1eefc" stroke-width="4"/>
+          <g font-family="Poppins, sans-serif" font-weight="700" font-size="20">
+            <rect x="30" y="60" width="26" height="26" rx="4" fill="#6e54e2"/>
+            <text x="43" y="79" fill="#fff" text-anchor="middle">W</text>
+            <rect x="60" y="60" width="26" height="26" rx="4" fill="#6e54e2"/>
+            <text x="73" y="79" fill="#fff" text-anchor="middle">O</text>
+            <rect x="90" y="60" width="26" height="26" rx="4" fill="#6e54e2"/>
+            <text x="103" y="79" fill="#fff" text-anchor="middle">R</text>
+            <rect x="30" y="92" width="26" height="26" rx="4" fill="#e3d9fc"/>
+            <text x="43" y="111" fill="#5b3fe0" text-anchor="middle">D</text>
+          </g>
+        </g>
+        <path d="M12 60 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3z" fill="#f0b84a"/>
+      </svg>
+    </div>
+
+  <div class="workspace" id="workspace">
+    <div class="sparkles" id="sparkles"></div>
+
+    <div class="columns">
+      <div class="col-left">
+        <div class="panel">
+          <div class="panel-head">
+            <span class="step">1</span>
+            <div>
+              <h2>Add Words</h2>
+              <p>Enter your words (one per line or separated by commas).</p>
+            </div>
+          </div>
+          <textarea id="wordsInput" placeholder="e.g. apple, banana, orange, ..."></textarea>
+          <div class="word-count">Words: <span id="wordCount">0</span></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <span class="step">2</span>
+            <h2>Puzzle Settings</h2>
+          </div>
+          <div class="settings-row">
+            <div class="field">
+              <label>Grid Size</label>
+              <select id="gridSize">
+                <option value="10">10 x 10</option>
+                <option value="12">12 x 12</option>
+                <option value="15" selected>15 x 15</option>
+                <option value="18">18 x 18</option>
+                <option value="20">20 x 20</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Difficulty</label>
+              <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Word Direction</label>
+              <select id="wordDirection">
+                <option value="all" selected>All Directions</option>
+                <option value="straight">Horizontal & Vertical</option>
+                <option value="horizontal">Horizontal Only</option>
+                <option value="vertical">Vertical Only</option>
+              </select>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <label class="toggle">
+              <input type="checkbox" id="toggleWordList" checked>
+              <span class="slider"></span> Include Word List
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="toggleAnswerKey">
+              <span class="slider"></span> Show Answer Key
+            </label>
+            <label class="toggle">
+              <input type="checkbox" id="toggleUppercase" checked>
+              <span class="slider"></span> Uppercase Letters
+            </label>
+          </div>
+        </div>
+
+        <button class="generate-btn" id="generateBtn">✨ Generate Word Search</button>
+        <div class="gen-warning" id="genWarning"></div>
+      </div>
+
+      <div class="col-right panel preview-panel">
+        <div class="preview-toolbar">
+          <div class="view-tabs">
+            <button class="view-tab active" id="previewTab" data-view="preview">👁 Preview</button>
+            <button class="view-tab" id="answerTab" data-view="answer" disabled>🔑 Answer Key</button>
+          </div>
+          <div class="action-btns">
+            <button class="icon-action" id="downloadBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 20h14"/></svg>
+              Download
+            </button>
+            <button class="icon-action" id="printBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1h-2M6 14h12v7H6z"/></svg>
+              Print
+            </button>
+          </div>
+        </div>
+
+        <div class="puzzle-area" id="puzzleArea">
+          <div class="puzzle-title" id="puzzleTitle" contenteditable="true" spellcheck="false">Animals Word Search</div>
+          <div class="puzzle-sub">Can you find all the hidden words?</div>
+          <div class="puzzle-body">
+            <table id="grid"></table>
+            <div class="word-list-side" id="wordListSide">
+              <h3>Find these words:</h3>
+              <ul id="wordListItems"></ul>
+            </div>
+          </div>
+          <div class="puzzle-footer">
+            <div class="brand">🧪 Questlix</div>
+            <div class="tagline">Learning is an Adventure! ✨</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="deco deco-bl">
+      <svg viewBox="0 0 200 210" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="100" cy="196" rx="76" ry="8" fill="#c9b8f0" opacity=".35"/>
+        <g stroke="#3d2260" stroke-width="0">
+          <rect x="30" y="150" width="140" height="40" rx="5" fill="#4a2f78"/>
+          <rect x="30" y="150" width="140" height="10" fill="#6e54e2"/>
+          <rect x="42" y="112" width="116" height="40" rx="5" fill="#6e54e2"/>
+          <rect x="42" y="112" width="116" height="10" fill="#8b6ae0"/>
+          <text x="100" y="138" font-family="Poppins, sans-serif" font-weight="700" font-size="13" fill="#fff" text-anchor="middle">WORDS</text>
+          <text x="100" y="176" font-family="Poppins, sans-serif" font-weight="700" font-size="13" fill="#fff" text-anchor="middle">WORDS</text>
+        </g>
+        <path d="M92 112 C86 92 92 74 104 60 C108 78 110 96 100 112 Z" fill="#6f9c53"/>
+        <path d="M104 60 C110 66 120 66 124 58" stroke="#4c7038" stroke-width="3" fill="none"/>
+      </svg>
+    </div>
+    <div class="deco deco-br">
+      <svg viewBox="0 0 170 190" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="85" cy="178" rx="56" ry="7" fill="#c9b8f0" opacity=".35"/>
+        <path d="M40 90 h90 l-8 78 a10 10 0 0 1 -10 9 h-54 a10 10 0 0 1 -10 -9 Z" fill="#7c64ee"/>
+        <ellipse cx="85" cy="90" rx="45" ry="10" fill="#8b6ae0"/>
+        <circle cx="66" cy="150" r="4.5" fill="#241c33"/>
+        <circle cx="104" cy="150" r="4.5" fill="#241c33"/>
+        <path d="M64 164 q21 14 42 0" stroke="#241c33" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <rect x="55" y="30" width="8" height="66" rx="3" fill="#f0b84a"/>
+        <polygon points="55,20 63,20 59,32" fill="#3a2a1a"/>
+        <rect x="78" y="36" width="8" height="60" rx="3" fill="#e8749a"/>
+        <polygon points="78,26 86,26 82,38" fill="#3a2a1a"/>
+        <rect x="101" y="44" width="8" height="52" rx="3" fill="#6fa8e0"/>
+        <polygon points="101,34 109,34 105,46" fill="#3a2a1a"/>
+      </svg>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ---------------- element refs ----------------
+  const wordsInput   = document.getElementById('wordsInput');
+  const wordCount    = document.getElementById('wordCount');
+  const gridSizeSel  = document.getElementById('gridSize');
+  const difficultySel= document.getElementById('difficulty');
+  const directionSel = document.getElementById('wordDirection');
+  const toggleWordList = document.getElementById('toggleWordList');
+  const toggleAnswerKey= document.getElementById('toggleAnswerKey');
+  const toggleUppercase= document.getElementById('toggleUppercase');
+  const generateBtn  = document.getElementById('generateBtn');
+  const genWarning   = document.getElementById('genWarning');
+  const previewTab   = document.getElementById('previewTab');
+  const answerTab    = document.getElementById('answerTab');
+  const downloadBtn  = document.getElementById('downloadBtn');
+  const printBtn     = document.getElementById('printBtn');
+  const puzzleTitle  = document.getElementById('puzzleTitle');
+  const gridTable    = document.getElementById('grid');
+  const wordListSide = document.getElementById('wordListSide');
+  const wordListItems= document.getElementById('wordListItems');
+
+  let lastGrid = null, lastPlacements = null, lastWords = [];
+  let currentView = 'preview';
+
+  // ---------------- word search generation ----------------
+  const VEC = { E:[1,0], S:[0,1], SE:[1,1], NE:[1,-1], W:[-1,0], N:[0,-1], NW:[-1,-1], SW:[-1,1] };
+  const REVERSE_OF = { E:'W', S:'N', SE:'NW', NE:'SW' };
+  const BASE_BY_MODE = {
+    all: ['E','S','SE','NE'],
+    straight: ['E','S'],
+    horizontal: ['E'],
+    vertical: ['S'],
+  };
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildDirectionPool(mode, difficulty){
+    const base = BASE_BY_MODE[mode] || BASE_BY_MODE.all;
+    const reverseChance = difficulty === 'hard' ? 1 : difficulty === 'medium' ? 0.5 : 0;
+    const pool = base.slice();
+    base.forEach(k=>{ if(Math.random() < reverseChance) pool.push(REVERSE_OF[k]); });
+    return shuffle(pool).map(k=>VEC[k]);
+  }
+
+  function makeEmptyGrid(size){
+    return Array.from({length:size}, ()=> Array.from({length:size}, ()=> ''));
+  }
+
+  function computeRange(delta, len, size){
+    if(delta === 0) return Array.from({length:size}, (_,i)=>i);
+    if(delta === 1) return Array.from({length: Math.max(0,size-len+1)}, (_,i)=>i);
+    return Array.from({length: Math.max(0,size-len+1)}, (_,i)=> i+len-1);
+  }
+
+  function canPlace(grid, word, x, y, dx, dy){
+    for(let i=0;i<word.length;i++){
+      const existing = grid[y+dy*i][x+dx*i];
+      if(existing !== '' && existing !== word[i]) return false;
+    }
+    return true;
+  }
+
+  function placeWord(grid, word, size, directions){
+    for(let attempt=0; attempt<400; attempt++){
+      const [dx,dy] = directions[Math.floor(Math.random()*directions.length)];
+      const xRange = computeRange(dx, word.length, size);
+      const yRange = computeRange(dy, word.length, size);
+      if(!xRange.length || !yRange.length) continue;
+      const startX = xRange[Math.floor(Math.random()*xRange.length)];
+      const startY = yRange[Math.floor(Math.random()*yRange.length)];
+      if(canPlace(grid, word, startX, startY, dx, dy)){
+        const cells = [];
+        for(let i=0;i<word.length;i++){
+          const x = startX+dx*i, y = startY+dy*i;
+          grid[y][x] = word[i];
+          cells.push([x,y]);
+        }
+        return { word, cells };
+      }
+    }
+    return null;
+  }
+
+  function fillRandomLetters(grid, size){
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    for(let y=0;y<size;y++) for(let x=0;x<size;x++){
+      if(grid[y][x] === '') grid[y][x] = letters[Math.floor(Math.random()*26)];
+    }
+  }
+
+  function buildPuzzle(words, size, mode, difficulty){
+    const sorted = [...words].sort((a,b)=> b.length-a.length);
+    let grid, placements, failed;
+    for(let attempt=0; attempt<15; attempt++){
+      grid = makeEmptyGrid(size);
+      placements = [];
+      failed = [];
+      const directions = buildDirectionPool(mode, difficulty);
+      for(const word of sorted){
+        if(word.length > size){ failed.push(word); continue; }
+        const placed = placeWord(grid, word, size, directions);
+        if(placed) placements.push(placed);
+        else failed.push(word);
+      }
+      if(failed.length === 0) break;
+    }
+    fillRandomLetters(grid, size);
+    return { grid, placements, failed };
+  }
+
+  // ---------------- rendering ----------------
+  function renderGrid(grid, placements, uppercase, showAnswer){
+    gridTable.innerHTML = '';
+    const answerCells = new Set();
+    if(showAnswer){
+      placements.forEach(p => p.cells.forEach(([x,y])=> answerCells.add(x+','+y)));
+    }
+    for(let y=0;y<grid.length;y++){
+      const tr = document.createElement('tr');
+      for(let x=0;x<grid[y].length;x++){
+        const td = document.createElement('td');
+        const ch = grid[y][x];
+        td.textContent = uppercase ? ch.toUpperCase() : ch.toLowerCase();
+        if(answerCells.has(x+','+y)) td.classList.add('answer-cell');
+        tr.appendChild(td);
+      }
+      gridTable.appendChild(tr);
+    }
+  }
+
+  function renderWordList(words, uppercase){
+    wordListItems.innerHTML = '';
+    words.forEach(w=>{
+      const li = document.createElement('li');
+      li.textContent = uppercase ? w.toUpperCase() : w.toLowerCase();
+      wordListItems.appendChild(li);
+    });
+  }
+
+  function refreshView(){
+    if(!lastGrid) return;
+    const uppercase = toggleUppercase.checked;
+    renderGrid(lastGrid, lastPlacements, uppercase, currentView === 'answer');
+    renderWordList(lastWords, uppercase);
+    wordListSide.style.display = toggleWordList.checked ? '' : 'none';
+  }
+
+  function setView(view){
+    if(view === 'answer' && answerTab.disabled) return;
+    currentView = view;
+    previewTab.classList.toggle('active', view === 'preview');
+    answerTab.classList.toggle('active', view === 'answer');
+    refreshView();
+  }
+  previewTab.addEventListener('click', ()=> setView('preview'));
+  answerTab.addEventListener('click', ()=> setView('answer'));
+
+  function parseWords(raw){
+    const list = raw.split(/[\n,]/).map(w=>w.trim().toUpperCase()).filter(Boolean);
+    const clean = list.filter(w => /^[A-Z]+$/.test(w));
+    return [...new Set(clean)];
+  }
+
+  wordsInput.addEventListener('input', ()=>{
+    wordCount.textContent = parseWords(wordsInput.value).length;
+  });
+
+  function runGenerate(words, titleText){
+    const size = parseInt(gridSizeSel.value, 10);
+    const mode = directionSel.value;
+    const difficulty = difficultySel.value;
+    const { grid, placements, failed } = buildPuzzle(words, size, mode, difficulty);
+    lastGrid = grid;
+    lastPlacements = placements;
+    lastWords = words;
+    if(titleText) puzzleTitle.textContent = titleText;
+    genWarning.textContent = failed.length
+      ? `Couldn't fit: ${failed.join(', ')} — try a larger grid or fewer words.`
+      : '';
+    refreshView();
+  }
+
+  generateBtn.addEventListener('click', ()=>{
+    const words = parseWords(wordsInput.value);
+    if(!words.length){
+      genWarning.textContent = 'Add at least one word to generate a puzzle.';
+      return;
+    }
+    setView('preview');
+    runGenerate(words, null);
+  });
+
+  // Grid size / difficulty / direction change the puzzle's structure, so
+  // they need a full regeneration — not just a display refresh.
+  [gridSizeSel, difficultySel, directionSel].forEach(el=>{
+    el.addEventListener('change', ()=>{ if(lastGrid) runGenerate(lastWords, null); });
+  });
+  // Uppercase / word-list visibility only affect how the existing puzzle
+  // is displayed, so a cheap refresh is enough.
+  [toggleUppercase, toggleWordList].forEach(el=>{
+    el.addEventListener('change', ()=>{ if(lastGrid) refreshView(); });
+  });
+
+  toggleAnswerKey.addEventListener('change', ()=>{
+    answerTab.disabled = !toggleAnswerKey.checked;
+    if(!toggleAnswerKey.checked && currentView === 'answer') setView('preview');
+  });
+
+  puzzleTitle.addEventListener('blur', ()=>{
+    if(!puzzleTitle.textContent.trim()) puzzleTitle.textContent = 'My Word Search';
+  });
+  puzzleTitle.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); puzzleTitle.blur(); } });
+
+  // ---------------- print ----------------
+  printBtn.addEventListener('click', ()=> window.print());
+
+  // ---------------- download as PNG ----------------
+  downloadBtn.addEventListener('click', ()=>{
+    if(!lastGrid) return;
+    const uppercase = toggleUppercase.checked;
+    const showAnswer = currentView === 'answer';
+    const size = lastGrid.length;
+    const cell = 30;
+    const includeList = toggleWordList.checked;
+    const listWidth = includeList ? 220 : 0;
+    const gridPx = size*cell;
+    const pad = 40;
+    const titleH = 46, subH = 26, footerH = 40;
+    const canvas = document.createElement('canvas');
+    canvas.width = pad*2 + gridPx + (includeList ? 26+listWidth : 0);
+    canvas.height = pad*2 + titleH + subH + gridPx + footerH;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = '#0b0a3d';
+    ctx.font = '700 26px Poppins, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(puzzleTitle.textContent || 'Word Search', canvas.width/2, pad+30);
+    ctx.font = '700 14px Nunito, sans-serif';
+    ctx.fillStyle = '#4a4770';
+    ctx.fillText('Can you find all the hidden words?', canvas.width/2, pad+52);
+
+    const gx = pad, gy = pad+titleH+subH;
+    const answerCells = new Set();
+    if(showAnswer) lastPlacements.forEach(p=>p.cells.forEach(([x,y])=>answerCells.add(x+','+y)));
+
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    for(let y=0;y<size;y++){
+      for(let x=0;x<size;x++){
+        const cx = gx+x*cell, cy = gy+y*cell;
+        if(answerCells.has(x+','+y)){
+          ctx.fillStyle = '#e3d9fc';
+          ctx.fillRect(cx, cy, cell, cell);
+        }
+        ctx.strokeStyle = '#eeeeee';
+        ctx.strokeRect(cx, cy, cell, cell);
+        ctx.fillStyle = answerCells.has(x+','+y) ? '#492ee2' : '#0b0a3d';
+        ctx.font = '700 14px Poppins, sans-serif';
+        const ch = lastGrid[y][x];
+        ctx.fillText(uppercase ? ch.toUpperCase() : ch.toLowerCase(), cx+cell/2, cy+cell/2+1);
+      }
+    }
+
+    if(includeList){
+      const lx = gx+gridPx+26;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#0b0a3d';
+      ctx.font = '700 15px Poppins, sans-serif';
+      ctx.fillText('Find these words:', lx, gy+10);
+      ctx.font = '800 13px Nunito, sans-serif';
+      ctx.fillStyle = '#4a4770';
+      lastWords.forEach((w,i)=>{
+        ctx.fillText(uppercase ? w.toUpperCase() : w.toLowerCase(), lx, gy+38+i*22);
+      });
+    }
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#492ee2';
+    ctx.font = '800 13px Poppins, sans-serif';
+    ctx.fillText('🧪 Questlix', canvas.width/2, gy+gridPx+26);
+    ctx.fillStyle = '#4a4770';
+    ctx.font = '700 11px Nunito, sans-serif';
+    ctx.fillText('Learning is an Adventure! ✨', canvas.width/2, gy+gridPx+44);
+
+    const link = document.createElement('a');
+    const name = (puzzleTitle.textContent || 'word-search').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-');
+    link.download = (name || 'word-search') + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  });
+
+  // ---------------- scattered sparkle background ----------------
+  (function drawSparkles(){
+    const wrap = document.getElementById('sparkles');
+    const SPARK = (x,y,r,color)=>`<svg style="position:absolute;left:${x}%;top:${y}%;width:${r*2}px;height:${r*2}px;" viewBox="0 0 ${r*2} ${r*2}"><path d="M${r} 0 C${r*1.1} ${r*0.85} ${r*1.15} ${r*0.9} ${r*2} ${r} C${r*1.15} ${r*1.1} ${r*1.1} ${r*1.15} ${r} ${r*2} C${r*0.9} ${r*1.15} ${r*0.85} ${r*1.1} 0 ${r} C${r*0.85} ${r*0.9} ${r*0.9} ${r*0.85} ${r} 0 Z" fill="${color}"/></svg>`;
+    const DOT = (x,y,r,color)=>`<svg style="position:absolute;left:${x}%;top:${y}%;width:${r*2}px;height:${r*2}px;" viewBox="0 0 ${r*2} ${r*2}"><circle cx="${r}" cy="${r}" r="${r-1.5}" fill="${color}"/></svg>`;
+    const STAR = (x,y,r,color)=>{
+      let d='', cx=r, cy=r;
+      for(let i=0;i<10;i++){
+        const ang = Math.PI/5*i - Math.PI/2;
+        const rad = i%2===0 ? r : r*0.42;
+        d += (i===0?'M':'L') + (cx+rad*Math.cos(ang)).toFixed(1) + ' ' + (cy+rad*Math.sin(ang)).toFixed(1) + ' ';
+      }
+      return `<svg style="position:absolute;left:${x}%;top:${y}%;width:${r*2}px;height:${r*2}px;" viewBox="0 0 ${r*2} ${r*2}"><path d="${d}Z" fill="none" stroke="${color}" stroke-width="2"/></svg>`;
+    };
+    const items = [
+      SPARK(4,8,8,'#8b6ae0'), DOT(1,42,4,'#e88fb0'), STAR(2,70,12,'#8fb4ea'),
+      SPARK(96,10,9,'#8b6ae0'), DOT(97,46,4,'#6fa8e0'), STAR(95,66,13,'#f0b84a'),
+      DOT(50,4,4,'#e88fb0'), SPARK(70,3,6,'#8b6ae0'),
+    ];
+    wrap.innerHTML = items.join('');
+  })();
+
+  // ---------------- initial demo puzzle ----------------
+  runGenerate(['LION','TIGER','ELEPHANT','MONKEY','ZEBRA','GIRAFFE','PANDA','KOALA','CHEETAH','LEOPARD'], 'Animals Word Search');
+</script>
+</body>
+</html>
