@@ -17,9 +17,13 @@ function TeacherTools() {
                         <div className="col l-1-7 mt-15">
                             <a className={cx('tool-item')} href="/play/grimoire-timer">
                                 <div className={cx('icon-tile')}>
-                                    <img className={cx('icon')} src={iconGrimoireTimer} alt="Grimoire Timer" />
+                                    <img className={cx('icon')} src={iconGrimoireTimer} alt="Timer" />
                                 </div>
-                                <h2 className={cx('title')}>Grimoire Timer</h2>
+                                <h2 className={cx('title')}>Timer</h2>
+                                <div className={cx('tooltip')}>
+                                    A simple classroom timer that helps teachers keep lessons, activities, and
+                                    breaks on track.
+                                </div>
                             </a>
                         </div>
                     </div>

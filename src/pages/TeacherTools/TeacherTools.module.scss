@@ -13,18 +13,57 @@
         font-weight: 600;
     }
     .tool-item {
+        position: relative;
         display: block;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         will-change: transform, box-shadow;
         background-color: transparent;
         border-radius: 10px;
-        overflow: hidden;
         cursor: pointer;
 
         &:hover {
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
             transform: translateY(-1px);
             background-color: transparent !important;
+        }
+
+        &:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -6px);
+        }
+    }
+
+    .tooltip {
+        position: absolute;
+        left: 50%;
+        bottom: 100%;
+        transform: translate(-50%, 0);
+        width: 240px;
+        margin-bottom: 6px;
+        padding: 10px 12px;
+        background: #241c33;
+        color: #fff;
+        font-size: 1.3rem;
+        font-weight: 600;
+        line-height: 1.4;
+        text-align: center;
+        border-radius: 8px;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        pointer-events: none;
+        z-index: 5;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #241c33;
         }
     }
 
