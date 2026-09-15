@@ -8,8 +8,8 @@
     // background: #c3fdea;
     // background: #bff7e9;
 
-    padding: 0px 24px;
-    // margin-top: var(--default-layout-header-height);
+    padding: 12px 24px;
+    margin-top: var(--default-layout-header-height);
 }
 
 .banner {
@@ -32,7 +32,8 @@
     position: relative;
     z-index: 1;
 
-    max-width: 2180px;
+    // max-width: 2180px;
+    max-width: 1100px;
     margin: auto;
 
     display: flex;
@@ -57,7 +58,7 @@
 }
 
 .left h1 {
-    font-size: 64px;
+    font-size: 40px;
     line-height: 1.15;
     font-weight: 800;
     color: #172554;
