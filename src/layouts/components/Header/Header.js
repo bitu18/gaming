@@ -83,9 +83,9 @@ function Header() {
 
                     <NavLink to="/games">Games</NavLink>
 
-                    <NavLink to="/resource-library">Resource Library</NavLink>
+                    {/* <NavLink to="/resource-library">Resource Library</NavLink>
 
-                    <NavLink to="/pricing">Pricing</NavLink>
+                    <NavLink to="/pricing">Pricing</NavLink> */}
                 </nav>
 
                 {/* Right */}
