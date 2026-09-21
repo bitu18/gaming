@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Timer</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <style>
   :root{
     --page:#ffffff;
@@ -42,36 +43,39 @@
   }
 
   /* ---------------- site header (sits above the card, matches the Questlix nav) ---------------- */
+  /* This bar intentionally matches the real site header (Header.module.scss)
+     exactly — font, colors, spacing — regardless of the tool's own theme
+     below it, since it's the same nav a visitor sees on every other page. */
   .site-header{
     display:flex; align-items:center; justify-content:space-between;
     gap:24px; flex-wrap:wrap;
     padding:8px 4px 26px;
   }
-  .logo-link{ display:flex; align-items:center; gap:10px; flex:none; transition:transform .12s, filter .15s; }
-  .logo-link img{ display:block; height:clamp(34px,3.4vw,46px); width:auto; }
-  .logo-link:hover{ transform:scale(1.04); filter:brightness(1.06); }
-  .logo-link:active{ transform:scale(.96); }
+  .logo-link{ display:flex; align-items:center; flex:none; transition:opacity .12s; }
+  .logo-link img{ display:block; width:clamp(150px,16vw,220px); height:auto; }
+  .logo-link:hover{ opacity:.9; }
 
-  .site-nav{ display:flex; align-items:center; gap:clamp(20px,3vw,44px); flex-wrap:wrap; }
+  .site-nav{ display:flex; align-items:center; gap:clamp(20px,3vw,38px); flex-wrap:wrap; }
   .site-nav a{
-    font-family:'Nunito',sans-serif; font-weight:800;
-    font-size:clamp(14px,1.15vw,17px); color:var(--ink);
-    text-decoration:none; opacity:.88; transition:opacity .15s;
+    font-family:'Noto Serif', serif; font-weight:600;
+    font-size:clamp(14px,1.15vw,16px); color:#1e2a78;
+    text-decoration:none; transition:color .2s;
   }
-  .site-nav a:hover{ opacity:1; }
+  .site-nav a:hover{ color:#3767ff; }
 
-  .site-auth{ display:flex; align-items:center; gap:12px; }
+  .site-auth{ display:flex; align-items:center; gap:16px; }
   .btn-outline, .btn-solid{
-    font-family:'Nunito',sans-serif; font-weight:800;
+    font-family:'Noto Serif', serif; font-weight:600;
     font-size:clamp(13px,1.1vw,16px);
-    padding:10px 24px; border-radius:999px; text-decoration:none;
-    transition:transform .12s, filter .15s; display:inline-block;
+    min-width:100px; text-align:center;
+    padding:9px 16px; border-radius:999px; text-decoration:none;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+    transition:border-color .15s, background-color .15s; display:inline-block;
   }
-  .btn-outline{ color:var(--accent); border:2px solid var(--accent); background:#fff; }
-  .btn-outline:hover{ background:#f3f0fe; }
-  .btn-solid{ color:#fff; background:linear-gradient(160deg, var(--btn-top), var(--btn-mid)); border:2px solid transparent; }
-  .btn-solid:hover{ filter:brightness(1.06); }
-  .btn-outline:active, .btn-solid:active{ transform:translateY(1px); }
+  .btn-outline{ color:#2d5bff; background:transparent; border:2px solid #2d5bff; }
+  .btn-outline:hover{ background-color:rgba(239,247,255,1); }
+  .btn-solid{ color:#fff; background:#2d5bff; border:2px solid #2d5bff; }
+  .btn-solid:hover{ background:linear-gradient(0deg, rgba(0,0,0,.06), rgba(0,0,0,.06)), #2d5bff; }
 
   /* ---------------- card ---------------- */
   .card{
@@ -232,7 +236,7 @@
   <!-- SITE HEADER: matches the Questlix nav row above the timer card -->
   <div class="site-header">
     <a class="logo-link" href="/" target="_top" title="Go to home page">
-      <img src="assets/logo_reference.png" alt="Questlix home">
+      <img src="assets/logo.png" alt="Questlix">
     </a>
     <nav class="site-nav">
       <a href="/worksheets" target="_top">Worksheets</a>
