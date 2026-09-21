@@ -457,6 +457,16 @@
   });
   resetBtn.addEventListener('click', reset);
 
+  // Enter mirrors the main button: start/pause normally, reset once the
+  // alarm is ringing — but not while typing in the time-edit field.
+  document.addEventListener('keydown', (e)=>{
+    if(e.key !== 'Enter') return;
+    const active = document.activeElement;
+    if(active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) return;
+    e.preventDefault();
+    startBtn.click();
+  });
+
   document.querySelectorAll('.tag-btn[data-secs]').forEach(btn=>{
     btn.addEventListener('click', ()=> addTime(parseInt(btn.dataset.secs,10)));
   });
@@ -495,6 +505,7 @@
     }
 
     input.addEventListener('keydown', e=>{
+      e.stopPropagation();
       if(e.key >= '0' && e.key <= '9'){
         e.preventDefault();
         digits = (digits + e.key).slice(-4);
