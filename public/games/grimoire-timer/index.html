@@ -584,6 +584,13 @@
   });
 
   render();
+
+  // Grab keyboard focus on load so Enter works right away — when this
+  // page is embedded in an iframe (as it is via /play/grimoire-timer),
+  // the browser otherwise leaves the parent page focused until the user
+  // clicks inside the iframe once.
+  document.body.setAttribute('tabindex', '-1');
+  document.body.focus({ preventScroll: true });
 </script>
 </body>
 </html>
