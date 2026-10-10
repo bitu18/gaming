@@ -18,8 +18,6 @@
     --accent:#5b5ff0;
     --accent-deep:#4a4ee0;
     --blue:#2d5bff;
-    --doodle:#27336b;
-    --answer:#dfe4ff;
     --ui-font:'Andika','Nunito',system-ui,sans-serif;
   }
 
@@ -128,8 +126,15 @@
     padding:10px 14px; font-family:var(--ui-font); font-size:18px; line-height:1.32; color:var(--ink);
     outline:none; transition:border-color .15s, box-shadow .15s;
   }
-  #wordsInput:focus, .field select:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,95,240,.15); }
+  #wordsInput:focus, .title-field input:focus, .field select:focus{ border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,95,240,.15); }
   .word-count{ margin-top:8px; font-size:15px; color:var(--ink-soft); }
+  .title-field{ display:block; margin:10px 0 14px; font-size:17px; color:var(--ink); }
+  .title-field input{
+    display:block; width:100%; margin-top:8px; padding:11px 14px;
+    border:1.5px solid var(--field-border); border-radius:10px; background:#fff;
+    font-family:var(--ui-font); font-size:18px; color:var(--ink);
+    outline:none; transition:border-color .15s, box-shadow .15s;
+  }
 
   .options{ display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1fr); gap:20px 24px; margin-top:12px; }
   .field > label:not(.check), .field > .label{ display:block; font-size:17px; color:var(--ink); margin-bottom:8px; }
@@ -164,45 +169,10 @@
   .preview-head p{ margin:0; font-size:15px; color:var(--ink-soft); }
   .preview-head .check{ font-size:15px; margin-top:6px; }
 
-  .paper{
-    background:#fff; border:1.5px solid #d5dbec; margin:0 6px;
-    padding:clamp(16px,2.2vw,30px) clamp(14px,2.4vw,38px) clamp(16px,1.8vw,22px);
-    font-family:var(--sheet-font, var(--ui-font)); color:#111a3d;
+  #sheetCanvas{
+    display:block; width:calc(100% - 12px); height:auto; margin:0 6px;
+    background:#fff; border:1.5px solid #d5dbec;
   }
-  .name-row{ display:flex; justify-content:space-between; gap:16px; font-size:14.5px; }
-  .name-row span{ display:flex; align-items:flex-end; gap:6px; white-space:nowrap; }
-  .name-row i{ display:block; border-bottom:1.5px solid #111a3d; margin-bottom:3px; }
-  .name-row .name-line{ width:clamp(90px,13vw,168px); }
-  .name-row .date-line{ width:clamp(70px,9vw,112px); }
-
-  .title-row{ text-align:center; margin:4px 0 6px; }
-  .puzzle-title{
-    display:inline-block; font-size:clamp(22px,2.5vw,33px); font-weight:700; color:var(--ink);
-    outline:none; border-radius:8px; padding:0 10px; cursor:text; min-width:60px;
-  }
-  .puzzle-title:hover, .puzzle-title:focus{ background:#eef2ff; }
-
-  .puzzle-row{ display:grid; grid-template-columns:minmax(0,84px) minmax(0,1fr) minmax(0,84px); gap:clamp(8px,1.4vw,20px); align-items:stretch; }
-  .doodles{ display:flex; flex-direction:column; justify-content:space-around; align-items:center; gap:10px; }
-  .doodles svg{ display:block; width:100%; height:auto; }
-  .doodles svg.small{ width:48%; }
-  .doodles svg.mid{ width:74%; }
-
-  .grid-wrap{ container-type:inline-size; align-self:center; }
-  #grid{
-    display:grid; grid-template-columns:repeat(var(--n), 1fr);
-    border:2px solid #111a3d; padding:1.2%;
-    font-size:calc(100cqw / var(--n) * .6); line-height:1;
-  }
-  #grid span{ aspect-ratio:1; display:flex; align-items:center; justify-content:center; border-radius:22%; }
-  #grid span.answer-cell{ background:var(--answer); font-weight:700; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-
-  .word-box{
-    margin:14px auto 0; width:min(100%, 420px + 8%);
-    border:2px solid #111a3d; border-radius:14px; padding:8px 16px 12px; font-size:15px;
-  }
-  .word-box h3{ margin:0 0 6px; font-size:15px; font-weight:400; }
-  .word-box ul{ list-style:none; margin:0; padding:0 0 0 12px; display:flex; flex-wrap:wrap; gap:4px 28px; }
 
   .preview-actions{ display:flex; gap:16px; margin:18px 6px 4px; padding:0 clamp(0px,3vw,38px); }
   .action-btn{
@@ -227,30 +197,16 @@
     .options{ grid-template-columns:1fr; }
     .step{ grid-template-columns:36px minmax(0,1fr); column-gap:12px; }
     .step-num{ width:36px; height:36px; font-size:18px; }
-    .puzzle-row{ grid-template-columns:1fr; }
-    .doodles{ display:none; }
     .preview-actions{ flex-direction:column; }
   }
 
-  .print-sheet{ display:none; }
-
   @page{ margin:8mm; }
   @media print{
-    body.has-print-sheet .paper{ display:none; }
-    body.has-print-sheet .print-sheet{ display:block; width:100%; height:auto; }
     .site-bar, .hero, .controls-card, .preview-head, .preview-actions{ display:none !important; }
     body{ background:#fff; min-height:0; }
     .wrap, .columns{ display:block; max-width:none; padding:0; }
     .card{ border:none; background:none; padding:0; }
-    .paper{ border:none; margin:0; padding:0; }
-    .name-row{ font-size:13pt; }
-    .name-row .name-line{ width:230px; }
-    .name-row .date-line{ width:150px; }
-    .puzzle-title{ font-size:28pt; margin:12px 0; }
-    .puzzle-row{ grid-template-columns:90px minmax(0,1fr) 90px; gap:22px; }
-    .doodles{ display:flex; }
-    .word-box{ width:86%; margin-top:22px; font-size:13pt; padding:10px 20px 14px; }
-    .word-box h3{ font-size:13pt; }
+    #sheetCanvas{ width:100%; margin:0; border:none; }
   }
 </style>
 </head>
@@ -315,6 +271,9 @@
         <span class="step-num">1</span>
         <div>
           <h2>Enter Your Words</h2>
+          <label class="title-field">Worksheet Title
+            <input type="text" id="titleInput" value="Ocean Animals" maxlength="60" spellcheck="false">
+          </label>
           <p class="help">Type your words below (one per line or separated by commas).</p>
           <textarea id="wordsInput" spellcheck="false">ocean
 whale
@@ -384,31 +343,12 @@ coral</textarea>
       <div class="preview-head">
         <div>
           <h2>Preview</h2>
-          <p>This is a preview. Your worksheet will be formatted for printing.</p>
+          <p>This is exactly how your worksheet will download and print.</p>
         </div>
         <label class="check"><input type="checkbox" id="toggleAnswerKey"> Show answer key</label>
       </div>
 
-      <div class="paper" id="paper">
-        <div class="name-row">
-          <span>Name: <i class="name-line"></i></span>
-          <span>Date: <i class="date-line"></i></span>
-        </div>
-        <div class="title-row">
-          <div class="puzzle-title" id="puzzleTitle" contenteditable="true" spellcheck="false" title="Click to edit the title">Ocean Animals</div>
-        </div>
-        <div class="puzzle-row">
-          <div class="doodles" id="doodlesLeft"></div>
-          <div class="grid-wrap"><div id="grid"></div></div>
-          <div class="doodles" id="doodlesRight"></div>
-        </div>
-        <div class="word-box" id="wordBox">
-          <h3>Find these words:</h3>
-          <ul id="wordListItems"></ul>
-        </div>
-      </div>
-
-      <img class="print-sheet" id="printSheet" alt="">
+      <canvas id="sheetCanvas" width="1700" height="2200" aria-label="Worksheet preview"></canvas>
 
       <div class="preview-actions">
         <button class="action-btn" id="downloadBtn">
@@ -441,12 +381,8 @@ coral</textarea>
   const genWarning   = document.getElementById('genWarning');
   const downloadBtn  = document.getElementById('downloadBtn');
   const printBtn     = document.getElementById('printBtn');
-  const paper        = document.getElementById('paper');
-  const printSheet   = document.getElementById('printSheet');
-  const puzzleTitle  = document.getElementById('puzzleTitle');
-  const gridEl       = document.getElementById('grid');
-  const wordBox      = document.getElementById('wordBox');
-  const wordListItems= document.getElementById('wordListItems');
+  const sheetCanvas  = document.getElementById('sheetCanvas');
+  const titleInput   = document.getElementById('titleInput');
 
   // Each word is { label, key }: label is what the word list shows, key is
   // the letters-only uppercase form that gets hidden in the grid.
@@ -544,86 +480,6 @@ coral</textarea>
     return set;
   }
 
-  // ---------------- worksheet doodles ----------------
-  // Line-art paths for the on-page preview.
-  const circ = (cx,cy,r)=> `M${cx-r} ${cy}a${r} ${r} 0 1 0 ${r*2} 0a${r} ${r} 0 1 0 ${-r*2} 0`;
-  const starPath = (cx,cy,R,r,rot)=>{
-    let d = '';
-    for(let i=0;i<10;i++){
-      const ang = Math.PI/5*i - Math.PI/2 + rot;
-      const rad = i%2===0 ? R : r;
-      d += (i===0?'M':'L') + (cx+rad*Math.cos(ang)).toFixed(1) + ' ' + (cy+rad*Math.sin(ang)).toFixed(1);
-    }
-    return d + 'Z';
-  };
-  const DOODLES = {
-    bubbles:{ w:44, h:56, d: circ(28,10,6) + circ(12,30,5) + circ(30,48,3.5) },
-    fish:{ w:84, h:56, d:
-      'M8 28C20 8 50 6 62 28C50 50 20 48 8 28Z' +
-      'M60 28L78 13L73 28L78 43Z' +
-      'M34 13C38 5 46 5 49 13' +
-      'M30 19C35 25 35 32 30 38' +
-      circ(21,24,2.2) },
-    waves:{ w:76, h:44, d:
-      'M4 9q8-8 16 0t16 0t16 0' +
-      'M14 23q8-8 16 0t16 0t16 0t10-3' +
-      'M22 37q8-8 16 0t16 0' },
-    starfish:{ w:64, h:64, d: starPath(32,33,28,12.5,.22) + circ(32,33,1.6) + circ(32,22,1.4) + circ(42,30,1.4) + circ(38,42,1.4) + circ(25,41,1.4) + circ(22,29,1.4) },
-    whale:{ w:86, h:64, d:
-      'M6 38C6 20 34 16 52 22C62 25 66 31 70 27C70 19 76 15 82 15C82 24 80 34 73 42C64 54 40 58 22 54C12 52 6 48 6 38Z' +
-      'M8 42C14 46 21 46 27 43' +
-      'M31 14C31 7 25 4 20 6M31 14C31 7 37 4 42 6' +
-      circ(20,35,2.2) },
-    seaweed:{ w:64, h:112, d:
-      'M22 108C10 86 32 74 20 52C10 34 28 24 22 6C36 24 24 38 34 54C44 72 26 88 34 108' +
-      'M42 108C36 92 52 82 44 64C38 50 50 42 46 30C58 44 48 58 56 70C64 86 50 96 54 108' +
-      'M4 108C8 97 22 96 28 103C36 95 54 97 60 108Z' },
-  };
-  const DOODLE_COLUMNS = {
-    left:  [['bubbles','small'], ['fish',''], ['waves','mid'], ['starfish','mid']],
-    right: [['whale',''], ['bubbles','small'], ['waves','mid'], ['seaweed','mid']],
-  };
-
-  function doodleSvg(name, cls){
-    const d = DOODLES[name];
-    return `<svg class="${cls}" viewBox="0 0 ${d.w} ${d.h}" fill="none" stroke="#27336b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="${d.d}"/></svg>`;
-  }
-  document.getElementById('doodlesLeft').innerHTML  = DOODLE_COLUMNS.left.map(([n,c])=>doodleSvg(n,c)).join('');
-  document.getElementById('doodlesRight').innerHTML = DOODLE_COLUMNS.right.map(([n,c])=>doodleSvg(n,c)).join('');
-
-  // ---------------- rendering ----------------
-  function renderGrid(){
-    const answerCells = answerCellSet();
-    gridEl.style.setProperty('--n', lastGrid.length);
-    gridEl.innerHTML = '';
-    for(let y=0;y<lastGrid.length;y++){
-      for(let x=0;x<lastGrid[y].length;x++){
-        const cell = document.createElement('span');
-        cell.textContent = lastGrid[y][x];
-        if(answerCells.has(x+','+y)) cell.classList.add('answer-cell');
-        gridEl.appendChild(cell);
-      }
-    }
-  }
-
-  function renderWordList(){
-    wordListItems.innerHTML = '';
-    lastWords.forEach(w=>{
-      const li = document.createElement('li');
-      li.textContent = w.label;
-      wordListItems.appendChild(li);
-    });
-  }
-
-  function refreshView(){
-    paper.style.setProperty('--sheet-font', SHEET_FONTS[fontStyleSel.value]);
-    document.body.classList.remove('has-print-sheet');
-    if(!lastGrid) return;
-    renderGrid();
-    renderWordList();
-    wordBox.hidden = !toggleWordList.checked;
-  }
-
   function parseWords(raw){
     const seen = new Set();
     const words = [];
@@ -656,7 +512,7 @@ coral</textarea>
     genWarning.textContent = failed.length
       ? `Couldn't fit: ${failed.join(', ')} — try a larger grid or fewer words.`
       : '';
-    refreshView();
+    renderSheet();
   }
 
   generateBtn.addEventListener('click', ()=>{
@@ -673,21 +529,16 @@ coral</textarea>
   [gridSizeSel, dirHorizontal, dirVertical, dirDiagonal, dirBackward].forEach(el=>{
     el.addEventListener('change', ()=>{ if(lastGrid) runGenerate(lastWords); });
   });
-  // Font / word-list / answer-key only affect how the existing puzzle is
-  // displayed, so a cheap refresh is enough.
+  // Font / word-list / answer-key / title only affect how the existing
+  // puzzle is drawn, so a redraw is enough.
   [fontStyleSel, toggleWordList, toggleAnswerKey].forEach(el=>{
-    el.addEventListener('change', refreshView);
+    el.addEventListener('change', renderSheet);
   });
-
-  puzzleTitle.addEventListener('input', ()=> document.body.classList.remove('has-print-sheet'));
-  puzzleTitle.addEventListener('blur', ()=>{
-    if(!puzzleTitle.textContent.trim()) puzzleTitle.textContent = 'My Word Search';
-  });
-  puzzleTitle.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); puzzleTitle.blur(); } });
+  titleInput.addEventListener('input', renderSheet);
 
   // ---------------- printable worksheet ----------------
-  // Download and Print share one template: the worksheet is drawn on a US
-  // Letter canvas at 200dpi using the art in assets/download_temp.
+  // The preview, Download and Print all show the same canvas: a US Letter
+  // page at 200dpi drawn with the art in assets/download_temp.
   const PAGE_W = 1700, PAGE_H = 2200;
   const SHEET = { purple:'#9485f7', lavender:'#e8e4fb', navy:'#14125a', subtitle:'#6a5bd8', pink:'#ff5fa8', gridLine:'#dcd7f6', answer:'#d9d3ff' };
   // Source rectangles are the visible part of each PNG (they all have
@@ -756,7 +607,7 @@ coral</textarea>
     const size = lastGrid.length;
     const includeList = toggleWordList.checked;
     const showAnswers = toggleAnswerKey.checked;
-    const canvas = document.createElement('canvas');
+    const canvas = sheetCanvas;
     canvas.width = PAGE_W;
     canvas.height = PAGE_H;
     const ctx = canvas.getContext('2d');
@@ -776,7 +627,7 @@ coral</textarea>
 
     // title on its lavender pill — always centered on the page, shrinking
     // to stay clear of the magnifier
-    const title = puzzleTitle.textContent.trim() || 'Word Search';
+    const title = titleInput.value.trim() || 'Word Search';
     const pillPad = 55, artRight = 315, rightEdge = PAGE_W - 90;
     const centerX = PAGE_W/2;
     const maxTitleW = (centerX - artRight - pillPad) * 2;
@@ -888,28 +739,21 @@ coral</textarea>
     drawArt(ctx, art, 'footer', (PAGE_W-380)/2, 2030, 380, 101);
     drawSparkle(ctx, PAGE_W/2 - 270, 2086, 20, SHEET.purple);
     drawSparkle(ctx, PAGE_W/2 + 270, 2086, 20, SHEET.pink);
-    return canvas;
   }
 
-  async function buildWorksheet(){
+  // Each call redraws from the current state once fonts and art are ready,
+  // so overlapping calls are harmless — the last one to finish wins.
+  async function renderSheet(){
+    if(!lastGrid) return;
     const family = SHEET_FONTS[fontStyleSel.value];
     // Canvas text silently falls back if the web font isn't loaded yet.
     try{ await Promise.all(['900 170px','800 46px','700 38px','600 40px'].map(f => document.fonts.load(`${f} ${family}`))); }catch(e){}
-    return drawWorksheet(await loadSheetArt());
+    drawWorksheet(await loadSheetArt());
   }
 
   // ---------------- print ----------------
-  // The button prints the same template as the PDF, via an image that only
-  // shows in print. Ctrl+P without it falls back to printing the preview.
   printBtn.addEventListener('click', async ()=>{
-    if(lastGrid){
-      try{
-        const canvas = await buildWorksheet();
-        printSheet.src = canvas.toDataURL('image/png');
-        await printSheet.decode();
-        document.body.classList.add('has-print-sheet');
-      }catch(e){}
-    }
+    await renderSheet();
     window.print();
   });
 
@@ -947,12 +791,13 @@ coral</textarea>
 
   downloadBtn.addEventListener('click', async ()=>{
     if(!lastGrid) return;
-    const canvas = await buildWorksheet();
+    await renderSheet();
+    const canvas = sheetCanvas;
     const base64 = canvas.toDataURL('image/jpeg', 0.94).split(',')[1];
     const jpeg = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
     const url = URL.createObjectURL(jpegToPdf(jpeg, canvas.width, canvas.height));
     const link = document.createElement('a');
-    const name = (puzzleTitle.textContent || '').trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    const name = titleInput.value.trim().toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
     link.download = (name || 'word-search') + (toggleAnswerKey.checked ? '-answer-key' : '') + '.pdf';
     link.href = url;
     document.body.appendChild(link);
