@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Word Search Creator</title>
-<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Patrick+Hand&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Nunito:wght@400;600;700;800;900&family=Patrick+Hand&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -232,8 +232,12 @@
     .preview-actions{ flex-direction:column; }
   }
 
-  @page{ margin:14mm; }
+  .print-sheet{ display:none; }
+
+  @page{ margin:8mm; }
   @media print{
+    body.has-print-sheet .paper{ display:none; }
+    body.has-print-sheet .print-sheet{ display:block; width:100%; height:auto; }
     .site-bar, .hero, .controls-card, .preview-head, .preview-actions{ display:none !important; }
     body{ background:#fff; min-height:0; }
     .wrap, .columns{ display:block; max-width:none; padding:0; }
@@ -404,6 +408,8 @@ coral</textarea>
         </div>
       </div>
 
+      <img class="print-sheet" id="printSheet" alt="">
+
       <div class="preview-actions">
         <button class="action-btn" id="downloadBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5M4 16.5v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
@@ -436,6 +442,7 @@ coral</textarea>
   const downloadBtn  = document.getElementById('downloadBtn');
   const printBtn     = document.getElementById('printBtn');
   const paper        = document.getElementById('paper');
+  const printSheet   = document.getElementById('printSheet');
   const puzzleTitle  = document.getElementById('puzzleTitle');
   const gridEl       = document.getElementById('grid');
   const wordBox      = document.getElementById('wordBox');
@@ -446,12 +453,11 @@ coral</textarea>
   let lastGrid = null, lastPlacements = null, lastWords = [];
 
   const SHEET_FONTS = {
-    clean: "'Andika', sans-serif",
+    clean: "'Nunito', sans-serif",
     serif: "'Noto Serif', serif",
     hand:  "'Patrick Hand', cursive",
     mono:  "'Courier Prime', monospace",
   };
-  const SHEET_INK = '#111a3d';
 
   // ---------------- word search generation ----------------
   const VEC = { E:[1,0], S:[0,1], SE:[1,1], NE:[1,-1], W:[-1,0], N:[0,-1], NW:[-1,-1], SW:[-1,1] };
@@ -539,8 +545,7 @@ coral</textarea>
   }
 
   // ---------------- worksheet doodles ----------------
-  // Line-art paths shared by the on-page preview (inline SVG) and the PDF
-  // (canvas Path2D), so the two always match.
+  // Line-art paths for the on-page preview.
   const circ = (cx,cy,r)=> `M${cx-r} ${cy}a${r} ${r} 0 1 0 ${r*2} 0a${r} ${r} 0 1 0 ${-r*2} 0`;
   const starPath = (cx,cy,R,r,rot)=>{
     let d = '';
@@ -578,7 +583,6 @@ coral</textarea>
     left:  [['bubbles','small'], ['fish',''], ['waves','mid'], ['starfish','mid']],
     right: [['whale',''], ['bubbles','small'], ['waves','mid'], ['seaweed','mid']],
   };
-  const DOODLE_SCALE = { '':1, mid:.74, small:.48 };
 
   function doodleSvg(name, cls){
     const d = DOODLES[name];
@@ -613,6 +617,7 @@ coral</textarea>
 
   function refreshView(){
     paper.style.setProperty('--sheet-font', SHEET_FONTS[fontStyleSel.value]);
+    document.body.classList.remove('has-print-sheet');
     if(!lastGrid) return;
     renderGrid();
     renderWordList();
@@ -674,145 +679,242 @@ coral</textarea>
     el.addEventListener('change', refreshView);
   });
 
+  puzzleTitle.addEventListener('input', ()=> document.body.classList.remove('has-print-sheet'));
   puzzleTitle.addEventListener('blur', ()=>{
     if(!puzzleTitle.textContent.trim()) puzzleTitle.textContent = 'My Word Search';
   });
   puzzleTitle.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ e.preventDefault(); puzzleTitle.blur(); } });
 
-  // ---------------- print ----------------
-  printBtn.addEventListener('click', ()=> window.print());
+  // ---------------- printable worksheet ----------------
+  // Download and Print share one template: the worksheet is drawn on a US
+  // Letter canvas at 200dpi using the art in assets/download_temp.
+  const PAGE_W = 1700, PAGE_H = 2200;
+  const SHEET = { purple:'#9485f7', lavender:'#e8e4fb', navy:'#14125a', subtitle:'#6a5bd8', pink:'#ff5fa8', gridLine:'#dcd7f6', answer:'#d9d3ff' };
+  // Source rectangles are the visible part of each PNG (they all have
+  // transparent padding around the art).
+  const SHEET_ART = {
+    frame:     { src:'assets/download_temp/down_temp_5.png' },
+    magnifier: { src:'assets/download_temp/down_temp_4.png', x:60,  y:184, w:1144, h:932 },
+    wordBox:   { src:'assets/download_temp/down_temp_1.png', x:68,  y:88,  w:2036, h:546 },
+    footer:    { src:'assets/download_temp/down_temp_3.png', x:116, y:100, w:1960, h:520 },
+  };
+  // The word box stretches to fit any number of rows: its header and bottom
+  // edge are drawn as-is and only this plain middle band is scaled.
+  const WORD_BOX_TOP = 232, WORD_BOX_BOTTOM = 74, WORD_BOX_HEADER = 164;
 
-  // ---------------- download as PDF ----------------
-  // The worksheet is drawn on a US Letter canvas at 200dpi and wrapped in a
-  // single-page PDF by hand, so no PDF library has to be loaded.
-  const PAGE_W = 1700, PAGE_H = 2200, PAGE_MARGIN = 140;
+  let sheetArtPromise = null;
+  function loadSheetArt(){
+    if(!sheetArtPromise){
+      sheetArtPromise = Promise.all(Object.entries(SHEET_ART).map(([name, art])=> new Promise(resolve=>{
+        const img = new Image();
+        img.onload = ()=> resolve([name, img]);
+        img.onerror = ()=> resolve([name, null]);
+        img.src = art.src;
+      }))).then(Object.fromEntries);
+    }
+    return sheetArtPromise;
+  }
 
-  function drawDoodle(ctx, name, cx, cy, width){
-    const d = DOODLES[name];
-    const s = width / d.w;
+  function drawArt(ctx, art, name, dx, dy, dw, dh){
+    const a = SHEET_ART[name];
+    if(art[name]) ctx.drawImage(art[name], a.x, a.y, a.w, a.h, dx, dy, dw, dh);
+  }
+
+  function drawSparkle(ctx, cx, cy, r, color){
+    const k = r * 0.18;
     ctx.save();
-    ctx.translate(cx - width/2, cy - d.h*s/2);
-    ctx.scale(s, s);
-    ctx.lineWidth = 2.2;
-    ctx.stroke(new Path2D(d.d));
+    ctx.beginPath();
+    ctx.moveTo(cx, cy-r);
+    ctx.quadraticCurveTo(cx+k, cy-k, cx+r, cy);
+    ctx.quadraticCurveTo(cx+k, cy+k, cx, cy+r);
+    ctx.quadraticCurveTo(cx-k, cy+k, cx-r, cy);
+    ctx.quadraticCurveTo(cx-k, cy-k, cx, cy-r);
+    ctx.closePath();
+    ctx.fillStyle = '#ffffff';
+    ctx.fill();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(4, r * 0.2);
+    ctx.stroke();
     ctx.restore();
   }
 
-  function drawWorksheet(){
+  function drawLabelBox(ctx, family, label, x, y, w, h){
+    ctx.beginPath(); ctx.roundRect(x, y, w, h, 22);
+    ctx.fillStyle = '#ffffff'; ctx.fill();
+    ctx.strokeStyle = SHEET.purple; ctx.lineWidth = 3; ctx.stroke();
+    ctx.font = `700 34px ${family}`;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = SHEET.navy;
+    ctx.fillText(label, x+26, y+h/2+12);
+    const lineX = x + 26 + ctx.measureText(label).width + 14;
+    ctx.strokeStyle = SHEET.navy;
+    ctx.beginPath(); ctx.moveTo(lineX, y+h/2+16); ctx.lineTo(x+w-26, y+h/2+16); ctx.stroke();
+  }
+
+  function drawWorksheet(art){
     const family = SHEET_FONTS[fontStyleSel.value];
     const size = lastGrid.length;
     const includeList = toggleWordList.checked;
+    const showAnswers = toggleAnswerKey.checked;
     const canvas = document.createElement('canvas');
     canvas.width = PAGE_W;
     canvas.height = PAGE_H;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, PAGE_W, PAGE_H);
-    ctx.fillStyle = SHEET_INK;
-    ctx.strokeStyle = SHEET_INK;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, PAGE_W, PAGE_H);
+    if(art.frame) ctx.drawImage(art.frame, 0, 0, PAGE_W, PAGE_H);
 
-    // name / date lines
-    ctx.font = `400 36px ${family}`;
-    ctx.lineWidth = 2.5;
-    ctx.textAlign = 'left';
-    const nameY = 190;
-    const nameW = ctx.measureText('Name: ').width;
-    ctx.fillText('Name:', PAGE_MARGIN, nameY);
-    ctx.beginPath(); ctx.moveTo(PAGE_MARGIN+nameW+8, nameY+6); ctx.lineTo(PAGE_MARGIN+nameW+478, nameY+6); ctx.stroke();
-    const dateLineW = 310;
-    const dateW = ctx.measureText('Date: ').width;
-    ctx.fillText('Date:', PAGE_W-PAGE_MARGIN-dateLineW-dateW-8, nameY);
-    ctx.beginPath(); ctx.moveTo(PAGE_W-PAGE_MARGIN-dateLineW, nameY+6); ctx.lineTo(PAGE_W-PAGE_MARGIN, nameY+6); ctx.stroke();
+    // name / date boxes, top right
+    const dateW = 345, nameW = 395, labelH = 86, labelY = 54;
+    const dateX = PAGE_W - 64 - dateW;
+    drawLabelBox(ctx, family, 'Date:', dateX, labelY, dateW, labelH);
+    drawLabelBox(ctx, family, 'Name:', dateX - 22 - nameW, labelY, nameW, labelH);
 
-    // title (shrinks to fit)
+    drawArt(ctx, art, 'magnifier', 78, 132, 400, 326);
+
+    // title on its lavender pill — centered on the page, or beside the
+    // magnifier (shrinking to fit) once it gets too long for that
     const title = puzzleTitle.textContent.trim() || 'Word Search';
-    let titlePx = 84;
-    ctx.font = `700 ${titlePx}px ${family}`;
-    const maxTitleW = PAGE_W - PAGE_MARGIN*2;
-    if(ctx.measureText(title).width > maxTitleW){
-      titlePx = Math.floor(titlePx * maxTitleW / ctx.measureText(title).width);
-      ctx.font = `700 ${titlePx}px ${family}`;
-    }
-    ctx.textAlign = 'center';
-    ctx.fillStyle = '#0e1a4f';
-    ctx.fillText(title, PAGE_W/2, 330);
-    ctx.fillStyle = SHEET_INK;
-
-    // word list layout (measured first — its height decides the grid size)
-    const boxW = 1240, boxPad = 46, rowH = 56, wordGap = 64;
-    const rows = [];
-    if(includeList){
-      ctx.font = `400 38px ${family}`;
-      let row = [], rowW = 0;
-      lastWords.forEach(w=>{
-        const wW = ctx.measureText(w.label).width;
-        if(row.length && rowW + wordGap + wW > boxW - boxPad*2 - 30){ rows.push(row); row = []; rowW = 0; }
-        rowW += (row.length ? wordGap : 0) + wW;
-        row.push({ label:w.label, width:wW });
-      });
-      if(row.length) rows.push(row);
-    }
-    const boxH = includeList ? 96 + rows.length*rowH + 30 : 0;
-
-    // grid
-    const gridTop = 410;
-    const availH = PAGE_H - gridTop - PAGE_MARGIN - (includeList ? boxH + 56 : 0);
-    const gridPx = Math.max(400, Math.min(1040, availH));
-    const pad = gridPx * 0.012;
-    const cell = (gridPx - pad*2) / size;
-    const gx = (PAGE_W - gridPx)/2, gy = gridTop;
-    const answerCells = answerCellSet();
-
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    for(let y=0;y<size;y++){
-      for(let x=0;x<size;x++){
-        const cx = gx+pad+x*cell, cy = gy+pad+y*cell;
-        const isAnswer = answerCells.has(x+','+y);
-        if(isAnswer){
-          ctx.fillStyle = '#dfe4ff';
-          ctx.beginPath(); ctx.roundRect(cx+1, cy+1, cell-2, cell-2, cell*0.22); ctx.fill();
-          ctx.fillStyle = SHEET_INK;
-        }
-        ctx.font = `${isAnswer ? 700 : 400} ${Math.round(cell*0.54)}px ${family}`;
-        ctx.fillText(lastGrid[y][x], cx+cell/2, cy+cell/2+2);
+    const pillPad = 70, artRight = 500, rightEdge = PAGE_W - 90;
+    let titlePx = 170;
+    ctx.font = `900 ${titlePx}px ${family}`;
+    let titleW = ctx.measureText(title).width;
+    let centerX = PAGE_W/2;
+    if(centerX - titleW/2 - pillPad < artRight){
+      centerX = (artRight + rightEdge)/2;
+      const maxW = rightEdge - artRight - pillPad*2;
+      if(titleW > maxW){
+        titlePx = Math.floor(titlePx * maxW / titleW);
+        ctx.font = `900 ${titlePx}px ${family}`;
+        titleW = ctx.measureText(title).width;
       }
     }
-    ctx.lineWidth = 4;
-    ctx.strokeRect(gx, gy, gridPx, gridPx);
+    const titleY = 292;
+    const pillH = Math.max(100, Math.min(165, titlePx * 0.95));
+    ctx.fillStyle = SHEET.lavender;
+    ctx.beginPath(); ctx.roundRect(centerX - titleW/2 - pillPad, titleY - pillH/2, titleW + pillPad*2, pillH, pillH/2); ctx.fill();
+    ctx.fillStyle = SHEET.navy;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(title, centerX, titleY + titlePx*0.04);
+    const sparkleX = centerX + titleW/2 + pillPad + 58;
+    if(sparkleX + 30 < rightEdge) drawSparkle(ctx, sparkleX, titleY + 8, 28, SHEET.purple);
 
-    // doodles down both sides of the grid
-    const colW = 170;
-    [['left', gx - 40 - colW/2], ['right', gx + gridPx + 40 + colW/2]].forEach(([side, colX])=>{
-      const list = DOODLE_COLUMNS[side];
-      list.forEach(([name, cls], i)=>{
-        const cy = gy + gridPx * (i + .5) / list.length;
-        drawDoodle(ctx, name, colX, cy, colW * DOODLE_SCALE[cls]);
-      });
+    ctx.font = `800 46px ${family}`;
+    ctx.fillStyle = SHEET.subtitle;
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(showAnswers ? 'Answer Key' : 'Can you find all the hidden words?', centerX, 415);
+
+    // word list layout (measured first — its height decides the grid size)
+    const gridTop = 455, contentBottom = 1950, boxGap = 26;
+    const boxW = 1130, boxScale = boxW / SHEET_ART.wordBox.w;
+    const boxTopH = Math.round(WORD_BOX_TOP * boxScale), boxBottomH = Math.round(WORD_BOX_BOTTOM * boxScale);
+    const headerH = Math.round(WORD_BOX_HEADER * boxScale);
+    const rowH = 54, listPx = 38;
+    const labels = lastWords.map(w => w.label.toUpperCase());
+    ctx.font = `700 ${listPx}px ${family}`;
+    const maxWordW = Math.max(0, ...labels.map(l => ctx.measureText(l).width));
+    const boxHeightFor = rows => Math.max(boxTopH + boxBottomH + 4, headerH + 30 + rows*rowH + 26);
+    const colStep = cols => (boxW - 65) / cols;
+    let cols = 3, rows = Math.ceil(labels.length / cols);
+    // Prefer a big grid: add columns while the list would squeeze it and
+    // the longest word still fits in a narrower column.
+    while(gridTop + 760 + boxGap + boxHeightFor(rows) > contentBottom && cols < 6 && maxWordW + 30 < colStep(cols+1)){
+      cols++;
+      rows = Math.ceil(labels.length / cols);
+    }
+    const boxH = includeList ? boxHeightFor(rows) : 0;
+
+    // grid
+    const gridPx = Math.max(600, Math.min(1090, contentBottom - gridTop - (includeList ? boxH + boxGap : 0)));
+    const gx = Math.round((PAGE_W - gridPx)/2), gy = gridTop;
+    const inset = 22;
+    const cell = (gridPx - inset*2) / size;
+    const answerCells = answerCellSet();
+
+    ctx.beginPath(); ctx.roundRect(gx, gy, gridPx, gridPx, 22);
+    ctx.fillStyle = '#ffffff'; ctx.fill();
+    ctx.strokeStyle = SHEET.purple; ctx.lineWidth = 3; ctx.stroke();
+
+    ctx.fillStyle = SHEET.answer;
+    answerCells.forEach(key=>{
+      const [x,y] = key.split(',').map(Number);
+      ctx.fillRect(gx+inset+x*cell, gy+inset+y*cell, cell, cell);
     });
+
+    ctx.strokeStyle = SHEET.gridLine; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for(let i=0;i<=size;i++){
+      const p = inset + i*cell;
+      ctx.moveTo(gx+p, gy+inset); ctx.lineTo(gx+p, gy+gridPx-inset);
+      ctx.moveTo(gx+inset, gy+p); ctx.lineTo(gx+gridPx-inset, gy+p);
+    }
+    ctx.stroke();
+
+    ctx.fillStyle = SHEET.navy;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    for(let y=0;y<size;y++){
+      for(let x=0;x<size;x++){
+        ctx.font = `${answerCells.has(x+','+y) ? 800 : 600} ${Math.round(cell*0.56)}px ${family}`;
+        ctx.fillText(lastGrid[y][x], gx+inset+(x+.5)*cell, gy+inset+(y+.5)*cell+2);
+      }
+    }
 
     // word list box
     if(includeList){
-      const bx = (PAGE_W - boxW)/2, by = gy + gridPx + 56;
-      ctx.lineWidth = 4;
-      ctx.beginPath(); ctx.roundRect(bx, by, boxW, boxH, 30); ctx.stroke();
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'alphabetic';
-      ctx.font = `400 38px ${family}`;
-      ctx.fillText('Find these words:', bx+boxPad, by+64);
-      rows.forEach((row, r)=>{
-        let x = bx + boxPad + 30;
-        row.forEach(w=>{
-          ctx.fillText(w.label, x, by + 64 + rowH*(r+1));
-          x += w.width + wordGap;
-        });
+      const bx = Math.round((PAGE_W - boxW)/2), by = gy + gridPx + boxGap;
+      const a = SHEET_ART.wordBox;
+      if(art.wordBox){
+        const midSrcH = a.h - WORD_BOX_TOP - WORD_BOX_BOTTOM;
+        ctx.drawImage(art.wordBox, a.x, a.y, a.w, WORD_BOX_TOP, bx, by, boxW, boxTopH);
+        ctx.drawImage(art.wordBox, a.x, a.y+WORD_BOX_TOP, a.w, midSrcH, bx, by+boxTopH, boxW, boxH-boxTopH-boxBottomH);
+        ctx.drawImage(art.wordBox, a.x, a.y+a.h-WORD_BOX_BOTTOM, a.w, WORD_BOX_BOTTOM, bx, by+boxH-boxBottomH, boxW, boxBottomH);
+      }else{
+        ctx.beginPath(); ctx.roundRect(bx, by, boxW, boxH, 30);
+        ctx.strokeStyle = SHEET.purple; ctx.lineWidth = 3; ctx.stroke();
+        ctx.font = `800 42px ${family}`;
+        ctx.fillText('Find these words:', PAGE_W/2, by + headerH/2);
+      }
+      const step = colStep(cols);
+      const px = Math.min(listPx, Math.floor(listPx * (step - 30) / Math.max(1, maxWordW)));
+      ctx.font = `700 ${px}px ${family}`;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = SHEET.navy;
+      labels.forEach((label, i)=>{
+        const col = Math.floor(i / rows), row = i % rows;
+        ctx.fillText(label, bx + 132 * 3/cols + col*step, by + headerH + 30 + (row+.5)*rowH);
       });
     }
+
+    // footer
+    drawArt(ctx, art, 'footer', (PAGE_W-500)/2, 1985, 500, 133);
+    drawSparkle(ctx, PAGE_W/2 - 345, 2062, 24, SHEET.purple);
+    drawSparkle(ctx, PAGE_W/2 + 345, 2062, 24, SHEET.pink);
     return canvas;
   }
+
+  async function buildWorksheet(){
+    const family = SHEET_FONTS[fontStyleSel.value];
+    // Canvas text silently falls back if the web font isn't loaded yet.
+    try{ await Promise.all(['900 170px','800 46px','700 38px','600 40px'].map(f => document.fonts.load(`${f} ${family}`))); }catch(e){}
+    return drawWorksheet(await loadSheetArt());
+  }
+
+  // ---------------- print ----------------
+  // The button prints the same template as the PDF, via an image that only
+  // shows in print. Ctrl+P without it falls back to printing the preview.
+  printBtn.addEventListener('click', async ()=>{
+    if(lastGrid){
+      try{
+        const canvas = await buildWorksheet();
+        printSheet.src = canvas.toDataURL('image/png');
+        await printSheet.decode();
+        document.body.classList.add('has-print-sheet');
+      }catch(e){}
+    }
+    window.print();
+  });
 
   // Wraps one JPEG in a minimal single-page US Letter PDF.
   function jpegToPdf(jpeg, imgW, imgH){
@@ -848,10 +950,7 @@ coral</textarea>
 
   downloadBtn.addEventListener('click', async ()=>{
     if(!lastGrid) return;
-    const family = SHEET_FONTS[fontStyleSel.value];
-    // Canvas text silently falls back if the web font isn't loaded yet.
-    try{ await Promise.all([document.fonts.load(`400 38px ${family}`), document.fonts.load(`700 84px ${family}`)]); }catch(e){}
-    const canvas = drawWorksheet();
+    const canvas = await buildWorksheet();
     const base64 = canvas.toDataURL('image/jpeg', 0.94).split(',')[1];
     const jpeg = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
     const url = URL.createObjectURL(jpegToPdf(jpeg, canvas.width, canvas.height));
