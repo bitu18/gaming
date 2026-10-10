@@ -772,24 +772,21 @@ coral</textarea>
     drawLabelBox(ctx, family, 'Date:', dateX, labelY, dateW, labelH);
     drawLabelBox(ctx, family, 'Name:', dateX - 22 - nameW, labelY, nameW, labelH);
 
-    drawArt(ctx, art, 'magnifier', 78, 132, 400, 326);
+    drawArt(ctx, art, 'magnifier', 72, 178, 230, 187);
 
-    // title on its lavender pill — centered on the page, or beside the
-    // magnifier (shrinking to fit) once it gets too long for that
+    // title on its lavender pill — always centered on the page, shrinking
+    // to stay clear of the magnifier
     const title = puzzleTitle.textContent.trim() || 'Word Search';
-    const pillPad = 70, artRight = 500, rightEdge = PAGE_W - 90;
+    const pillPad = 55, artRight = 315, rightEdge = PAGE_W - 90;
+    const centerX = PAGE_W/2;
+    const maxTitleW = (centerX - artRight - pillPad) * 2;
     let titlePx = 170;
     ctx.font = `900 ${titlePx}px ${family}`;
     let titleW = ctx.measureText(title).width;
-    let centerX = PAGE_W/2;
-    if(centerX - titleW/2 - pillPad < artRight){
-      centerX = (artRight + rightEdge)/2;
-      const maxW = rightEdge - artRight - pillPad*2;
-      if(titleW > maxW){
-        titlePx = Math.floor(titlePx * maxW / titleW);
-        ctx.font = `900 ${titlePx}px ${family}`;
-        titleW = ctx.measureText(title).width;
-      }
+    if(titleW > maxTitleW){
+      titlePx = Math.floor(titlePx * maxTitleW / titleW);
+      ctx.font = `900 ${titlePx}px ${family}`;
+      titleW = ctx.measureText(title).width;
     }
     const titleY = 292;
     const pillH = Math.max(100, Math.min(165, titlePx * 0.95));
@@ -807,7 +804,7 @@ coral</textarea>
     ctx.fillText(showAnswers ? 'Answer Key' : 'Can you find all the hidden words?', centerX, 415);
 
     // word list layout (measured first — its height decides the grid size)
-    const gridTop = 455, contentBottom = 1950, boxGap = 26;
+    const gridTop = 455, contentBottom = 2005, boxGap = 26;
     const boxW = 1130, boxScale = boxW / SHEET_ART.wordBox.w;
     const boxTopH = Math.round(WORD_BOX_TOP * boxScale), boxBottomH = Math.round(WORD_BOX_BOTTOM * boxScale);
     const headerH = Math.round(WORD_BOX_HEADER * boxScale);
@@ -888,9 +885,9 @@ coral</textarea>
     }
 
     // footer
-    drawArt(ctx, art, 'footer', (PAGE_W-500)/2, 1985, 500, 133);
-    drawSparkle(ctx, PAGE_W/2 - 345, 2062, 24, SHEET.purple);
-    drawSparkle(ctx, PAGE_W/2 + 345, 2062, 24, SHEET.pink);
+    drawArt(ctx, art, 'footer', (PAGE_W-380)/2, 2030, 380, 101);
+    drawSparkle(ctx, PAGE_W/2 - 270, 2086, 20, SHEET.purple);
+    drawSparkle(ctx, PAGE_W/2 + 270, 2086, 20, SHEET.pink);
     return canvas;
   }
 
