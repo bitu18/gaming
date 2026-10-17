@@ -1,0 +1,154 @@
+.hero {
+    position: relative;
+    min-height: calc(100vh - var(--default-layout-header-height));
+
+    overflow: hidden;
+
+    // background: #eef7ff;
+    // background: #c3fdea;
+    // background: #bff7e9;
+
+    padding: 12px 24px;
+    margin-top: var(--default-layout-header-height);
+}
+
+.banner {
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 200;
+
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    margin-left: 300px;
+
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+
+    // max-width: 2180px;
+    max-width: 1100px;
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+}
+
+.left {
+    width: 50%;
+}
+
+.right {
+    width: 50%;
+    // max-height: 80vh;
+
+    display: flex;
+    justify-content: center;
+
+    img {
+        width: 100%;
+        // max-width: 650px;
+    }
+}
+
+.left h1 {
+    font-size: 40px;
+    line-height: 1.15;
+    font-weight: 800;
+    color: #172554;
+}
+
+.left h1 span {
+    color: #2d5bff;
+}
+
+.left p {
+    margin-top: 20px;
+
+    color: #4b5563;
+
+    font-size: 20px;
+
+    line-height: 1.8;
+}
+
+.search {
+    margin-top: 40px;
+
+    width: 100%;
+    max-width: 600px;
+
+    background: var(--white-color);
+
+    border-radius: 60px;
+
+    display: flex;
+
+    align-items: center;
+
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.search input {
+    flex: 1;
+
+    border: none;
+
+    padding: 20px 28px;
+
+    font-size: 18px;
+
+    outline: none;
+
+    background: transparent;
+}
+
+.search button {
+    width: 70px;
+
+    border: none;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 22px;
+
+    color: #355dff;
+}
+
+.quickLinks {
+    margin-top: 32px;
+
+    display: flex;
+
+    gap: 18px;
+
+    flex-wrap: wrap;
+}
+
+.quickLinks button {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    border: none;
+
+    background: transparent;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    color: #2d5bff;
+
+    cursor: pointer;
+}

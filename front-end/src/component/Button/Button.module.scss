@@ -1,0 +1,101 @@
+.wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 9px 16px;
+    border-radius: 4px;
+    font-size: 1.6rem;
+    font-weight: 600;
+    font-family: var(--font-family);
+    background: var(--white-color);
+    border: 1px solid transparent;
+    user-select: none;
+    cursor: pointer;
+
+    + .wrapper {
+        margin-left: 16px;
+    }
+
+    &.disabled {
+        pointer-events: none;
+        // opacity: 0.5;
+        filter: saturate(0) brightness(110%);
+    }
+}
+
+// Button styles
+.rounded {
+    border-radius: 999px;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+    border-color: rgba(22, 24, 35, 0.12);
+
+    &:hover {
+        border-color: rgba(22, 24, 35, 0.2);
+        background-color: rgba(22, 24, 35, 0.03);
+    }
+}
+
+.primary {
+    color: var(--white-color);
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+
+    &:hover {
+        border-color: var(--primary-color);
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.06)), var(--primary-color);
+        // background-color: rgb(0 0 0 / 6%);
+    }
+}
+.normal {
+    color: var(--text-color);
+    font-weight: 600;
+    border: 1px solid rgba(22, 24, 35, 0.12);
+    border-radius: 2px;
+
+    &:hover {
+        background-color: rgba(22, 24, 35, 0.03);
+    }
+}
+
+.outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border-color: currentColor;
+    border: 2px solid var(--primary-color);
+
+    &:hover {
+        border-color: currentColor;
+        background-color: rgba(239, 247, 255, 1);
+    }
+}
+
+.text {
+    &:hover {
+        text-decoration: underline;
+    }
+}
+.icon + .title,
+.title + .icon {
+    margin-left: 8px;
+}
+
+.icon {
+    display: inline-block;
+    width: 24px;
+    text-align: center;
+}
+
+// Button sizes
+.small {
+    min-width: 88px;
+    padding: 4px 16px;
+}
+.medium {
+    min-width: 115px;
+}
+
+.large {
+    min-width: 140px;
+    padding: 14px 16px;
+}

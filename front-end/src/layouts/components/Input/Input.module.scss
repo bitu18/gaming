@@ -1,0 +1,69 @@
+.wrapper {
+    position: relative;
+    border-radius: 11px;
+    padding: 12px 15px 12px 15px;
+    margin: 0 0 16px 0;
+    width: 100%;
+    max-width: 330px;
+    border: 2px solid var(--border-input-color);
+
+    .show-password-btn {
+        position: absolute;
+        right: -16px;
+        top: 50%;
+        font-size: 1.8rem;
+        transform: translateY(-50%);
+        border: none;
+        background: transparent;
+        cursor: pointer;
+    }
+}
+
+.label {
+    text-align: left;
+    font-size: 1.7rem;
+    margin-bottom: 10px;
+}
+
+.input {
+    width: 100%;
+    height: 100%;
+    font-size: 1.6rem;
+}
+
+@media (max-width: 768px) {
+    .btn {
+        height: 48px;
+        font-size: 1.5rem;
+    }
+    .forgot-password {
+        font-size: 1.3rem;
+        margin-top: 12px;
+    }
+    .label {
+        font-size: 1.6rem;
+    }
+    .input {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn {
+        height: 44px;
+        font-size: 1.4rem;
+    }
+    .forgot-password {
+        font-size: 1.2rem;
+        margin-top: 10px;
+    }
+    .separate-text {
+        font-size: 1.2rem;
+    }
+    .label {
+    font-size: 1.5rem;
+    }
+    .input {
+        font-size: 1.4rem;
+    }
+}

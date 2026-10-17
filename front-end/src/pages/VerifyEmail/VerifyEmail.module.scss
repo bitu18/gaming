@@ -1,0 +1,51 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    min-width: 300px;
+}
+
+.title {
+    font-size: 2rem;
+    margin: 15px 0;
+}
+
+.icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: #4f46e5;
+    font-size: 30px;
+}
+
+.success-message {
+    margin: 0;
+    color: #15803d;
+    font-size: 14px;
+}
+
+.btn {
+    border: none;
+    width: 100%;
+    padding: 8px 0px;
+    border-radius: 10px;
+    font-size: 1.7rem;
+    transition: 0.2s ease;
+    background: #6242c4;
+    margin: 8px 0px;
+
+    &:hover {
+        background: #5335ae;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 24px 18px;
+    }
+}

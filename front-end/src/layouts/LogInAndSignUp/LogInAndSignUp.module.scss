@@ -1,0 +1,123 @@
+.wrapper {
+    min-height: 100dvh;
+    width: 100%;
+    background: url('../../assets/images/background_login.png') center / cover no-repeat;
+    // background-position: bottom;
+    // background-size: contain;
+    // background-position: center;
+    // background-repeat: no-repeat;
+    // background-color: #f5f3ff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    overflow-y: auto;
+}
+
+.inner {
+    box-shadow:
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--default-layout-header-height);
+    padding: 20px 32px;
+
+    .logo-link {
+        .logo {
+            width: 300px;
+            top: 10px;
+            position: relative;
+        }
+    }
+}
+
+.btn {
+    border: 2px solid #dcdcdc;
+    border-radius: 10px;
+
+    &:hover {
+        --tw-bg-opacity: 1;
+        background-color: rgba(241, 241, 241, var(--tw-bg-opacity));
+    }
+}
+
+.content {
+    width: 50%;
+    max-width: 550px;
+    margin: 100px auto;
+
+    flex: 1;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 32px 16px;
+}
+
+.popper {
+    // display: flex;
+    // justify-content: center;
+    // align-items: center;
+    // padding: 30px 15px;
+
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+}
+
+// Responsive
+@media (max-width: 1024px) {
+    .header {
+        padding: 18px 24px;
+    }
+    .logo {
+        width: 160px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 14px 20px;
+        .logo-link {
+            .logo {
+                width: 250px;
+            }
+        }
+    }
+    .btn {
+        font-size: 1.4rem;
+    }
+    .content {
+        width: 100%;
+        padding: 24px 12px;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 10px 16px;
+        .logo-link {
+            .logo {
+                width: 200px;
+            }
+        }
+    }
+    .btn {
+        font-size: 1.3rem;
+        padding: 7px 12px;
+    }
+    .content {
+        width: 100%;
+        padding: 20px 8px;
+    }
+}
