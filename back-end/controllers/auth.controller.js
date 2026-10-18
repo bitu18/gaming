@@ -30,7 +30,7 @@ export const register = async (req, res) => {
         try {
             await sendEmail({
                 email,
-                subject: 'Email Verification - Real Estate Platform',
+                subject: 'Email Verification - Questlix Platform',
                 message: `<p>Your verification code is: <strong>${verificationToken}</strong></p>`,
             });
         } catch (emailError) {
