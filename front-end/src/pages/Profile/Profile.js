@@ -8,17 +8,15 @@ import { faChevronRight, faCircleInfo, faComment, faUser, faUserPen } from '@for
 import { faSquareFacebook, faSquareInstagram, faSquareTwitter } from '@fortawesome/free-brands-svg-icons';
 import EditProfile from './EditProfile/EditProfile';
 import TitlePage from '~/component/TitlePage';
-import * as userService from '~/serivces/userService';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(style);
 function Profile() {
-    const {user, setUser, token} = useAuth();
+    const { user } = useAuth();
 
     const [userInfor, setUserInfor] = useState([]);
     const [openEdit, setOpenEdit] = useState('');
-
 
     const handleUpdateUser = (res) => {
         if (res.errorCode === 0) {
@@ -87,18 +85,18 @@ function Profile() {
                             </Button>
                         </div> */}
                         <div className={cx('section')}>
-                             <Button className={cx('btn', 'btn-custom')}>
-                               <span>
-                                    Joined: <p className={cx('text')}>
+                            <Button className={cx('btn', 'btn-custom')}>
+                                <span>
+                                    Joined:{' '}
+                                    <p className={cx('text')}>
                                         {user?.createAt
-                                            ? new Date(user.createAt).toLocaleDateString(
-                                                'en-US', {
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                    year: 'numeric',
-                                                })
+                                            ? new Date(user.createAt).toLocaleDateString('en-US', {
+                                                  month: 'short',
+                                                  day: 'numeric',
+                                                  year: 'numeric',
+                                              })
                                             : 'N/A'}
-                                            </p>
+                                    </p>
                                 </span>
                             </Button>
                         </div>

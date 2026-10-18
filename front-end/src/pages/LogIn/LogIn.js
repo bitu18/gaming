@@ -4,7 +4,7 @@ import TitleForLogin from '~/layouts/components/TitleForLogin';
 import Button from '~/component/Button';
 import styles from './LogIn.module.scss';
 import { useState } from 'react';
-import ButtonMethod from '~/layouts/components/ButtonMethod';
+// import ButtonMethod from '~/layouts/components/ButtonMethod';
 import * as userService from '~/serivces/userService';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '~/context/AuthContext';
@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 
 function LogIn() {
     const { login } = useAuth();
-   const [formData, setFormData] = useState({ email: '', password: ''});
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const [showPassword, setShowPassword] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -26,19 +26,15 @@ function LogIn() {
         setErrorMessage('');
     };
 
-   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrorMessage('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setErrorMessage('');
 
-    const result = await login({email: formData.email, password: formData.password});
+        const result = await login({ email: formData.email, password: formData.password });
 
         if (result.success) {
-            const storedUser = JSON.parse(
-                localStorage.getItem('user') ||
-                sessionStorage.getItem('user') ||
-                '{}'
-            );
+            const storedUser = JSON.parse(localStorage.getItem('user') || sessionStorage.getItem('user') || '{}');
 
             if (storedUser?.role === 'admin') {
                 // Navigate to admin dashboard
@@ -48,11 +44,10 @@ function LogIn() {
                 navigate('/');
             }
         } else {
-            setErrorMessage( result.message );
+            setErrorMessage(result.message);
         }
         setIsLoading(false);
-    }
-
+    };
 
     // const handleLoginByGoogle = async (dataUser) => {
     //     setErrorMessage('');
@@ -93,7 +88,7 @@ function LogIn() {
                 showPassword={showPassword}
                 setShowPassword={setShowPassword}
             />
-            { errorMessage && <span className={cx('error-message')}>{errorMessage}</span> }
+            {errorMessage && <span className={cx('error-message')}>{errorMessage}</span>}
             <Button primary medium disabled={isDisabled} className={cx('btn')} onClick={handleSubmit}>
                 {isLoading ? 'Logging in...' : 'Login'}
             </Button>

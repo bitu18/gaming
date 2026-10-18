@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import classNames from 'classnames/bind';
 
 import styles from './VerifyEmail.module.scss';
@@ -13,7 +13,6 @@ const cx = classNames.bind(styles);
 function VerifyEmail() {
     const location = useLocation();
     const navigate = useNavigate();
-
 
     // get email passed form register page
     const emailFromState = location.state?.email || '';
@@ -35,8 +34,8 @@ function VerifyEmail() {
         try {
             const res = await userService.verifyEmail(email, code);
 
-            if(res.success) {
-                setSuccess("Email verified successfully! Redirecting to login...");
+            if (res.success) {
+                setSuccess('Email verified successfully! Redirecting to login...');
                 setTimeout(() => {
                     navigate('/login');
                 }, 2000);
@@ -54,12 +53,9 @@ function VerifyEmail() {
         <div className={cx('wrapper')}>
             <div className={cx('icon')}>✉</div>
 
-            <TitleForLogin
-                title="Verify Your Email"
-                subtitle="Enter the 6-digit sent to your email."
-            />
+            <TitleForLogin title="Verify Your Email" subtitle="Enter the 6-digit sent to your email." />
 
-             {!emailFromState && (
+            {!emailFromState && (
                 <Input
                     label="Email"
                     type="email"
@@ -82,13 +78,13 @@ function VerifyEmail() {
                 }}
             />
 
-                <span className={cx('error-message')}>{errorMessage}</span>
-                {success && <span className={cx('success-message')}>{success}</span>}
-                {errorMessage && <span className={cx('error-message')}>{errorMessage}</span>}
+            <span className={cx('error-message')}>{errorMessage}</span>
+            {success && <span className={cx('success-message')}>{success}</span>}
+            {errorMessage && <span className={cx('error-message')}>{errorMessage}</span>}
 
-                   <Button primary medium disabled={isDisabled} className={cx('btn')} onClick={handleVerify}>
-                        {loading ? 'Verifying...' : 'Verify Email'}
-                    </Button>
+            <Button primary medium disabled={isDisabled} className={cx('btn')} onClick={handleVerify}>
+                {loading ? 'Verifying...' : 'Verify Email'}
+            </Button>
         </div>
     );
 }

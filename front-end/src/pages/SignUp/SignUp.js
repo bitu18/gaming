@@ -3,45 +3,44 @@ import styles from './SignUp.module.scss';
 import TitleForLogin from '~/layouts/components/TitleForLogin';
 import Button from '~/component/Button';
 
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import Input from '~/layouts/components/Input';
-import * as userService from '~/serivces/userService';
 import { Link, useNavigate } from 'react-router-dom';
-import {useAuth} from '~/context/AuthContext';
+import { useAuth } from '~/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function SignUp() {
-     const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    role: "student",
-  });
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        role: 'student',
+    });
 
-    const [errorMessage, setErrorMessage] = useState("");
-    const [success, setSuccess] = useState("");
+    const [errorMessage, setErrorMessage] = useState('');
+    const [success, setSuccess] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const navigate = useNavigate();
-    const {register} = useAuth();
+    const { register } = useAuth();
 
     const isDisabled = !formData.name || !formData.email || !formData.password;
 
-     const handleChange = (e) => {
+    const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-        setErrorMessage("");
-        setSuccess("");
+        setErrorMessage('');
+        setSuccess('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setErrorMessage("");
-        setSuccess("");
+        setErrorMessage('');
+        setSuccess('');
 
-       const result = await register({
+        const result = await register({
             name: formData.name,
             email: formData.email,
             password: formData.password,
@@ -49,16 +48,13 @@ function SignUp() {
         });
 
         if (result.success) {
-        setSuccess("Register successfull! Redirecting to verification...");
-        setTimeout(
-            () => navigate("/verify-email", { state: { email: result.user.email } }),
-            1500,
-        );
+            setSuccess('Register successfull! Redirecting to verification...');
+            setTimeout(() => navigate('/verify-email', { state: { email: result.user.email } }), 1500);
         } else {
-        setErrorMessage(result.message);
+            setErrorMessage(result.message);
         }
         setIsLoading(false);
-  };
+    };
 
     return (
         <div className={cx('wrapper')}>
@@ -91,9 +87,10 @@ function SignUp() {
                 setShowPassword={setShowPassword}
             />
             {errorMessage && <span className={cx('error-message')}>{errorMessage}</span>}
+            {success && <span className={cx('success-message')}>{success}</span>}
 
             <Button primary medium disabled={isDisabled} className={cx('btn')} onClick={handleSubmit}>
-                 {isLoading ? 'Creating Account...' : 'Sign Up'}
+                {isLoading ? 'Creating Account...' : 'Sign Up'}
             </Button>
 
             <div className={cx('separate')}>
